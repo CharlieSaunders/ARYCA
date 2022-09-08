@@ -1,0 +1,19 @@
+﻿@using Common.DTO.Unlockables;
+
+<div class="modal fade show @Theme.Value-modal" id="myModal" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+    <div class="modal-dialog @Theme.Value-modal-dialog">
+        <div class="modal-content @Theme.Value-modal-content">
+            <div class="modal-header @Theme.Value-modal-header">
+                <h4 class="modal-title">@Theme.Name</h4>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick="@ModalCancel">&times;</button>
+            </div>
+            <div class="modal-body @Theme.Value-modal-body">
+                Lorem ipsum doler amet
+            </div>
+            <div class="modal-footer @Theme.Value-modal-footer">
+                <button type="button" class="btn btn-success @Theme-btn-success" @onclick=@ModalOk>Ok</button>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick=@ModalCancel>Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

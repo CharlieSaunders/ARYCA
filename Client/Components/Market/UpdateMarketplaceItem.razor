@@ -1,0 +1,50 @@
+﻿@using Common.DTO.Unlockables;
+
+<div class="modal fade show @Theme-modal" id="myModal" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+    <div class="modal-dialog @Theme-modal-dialog">
+        <div class="modal-content @Theme-modal-content">
+            <div class="modal-header @Theme-modal-header">
+                <h4 class="modal-title">@SelectedItem.Name</h4>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick="@ModalCancel">&times;</button>
+            </div>
+            <div class="modal-body @Theme-modal-body">
+                <EditForm Model="@SelectedItem">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="form-group">
+                    <label class="col-md-3">Name</label>
+                    <InputText class="col-md-8" @bind-Value="SelectedItem.Name" /> 
+                </div>
+                <br />
+                <div class="form-group">
+                    <label class="col-md-3">Type</label>
+                    <InputText class="col-md-8" @bind-Value="SelectedItem.Type" /> 
+                </div>
+                <br />
+                 <div class="form-group">
+                    <label class="col-md-3">Value</label>
+                    <InputText class="col-md-8" @bind-Value="SelectedItem.Value" /> 
+                </div>
+                <br />
+                <div class="form-group">
+                    <label class="col-md-3">Price</label>
+                     <InputNumber class="col-md-8" @bind-Value="SelectedItem.Price" /> 
+                </div>
+                
+                @if (DisplayType == ModalType.Create)
+                {
+                    <br />
+                    <label>
+                        Image
+                        <InputFile />
+                    </label>
+                }
+                </EditForm>
+            </div>
+            <div class="modal-footer @Theme-modal-footer">
+                <button type="button" class="btn btn-success @Theme-btn-success" @onclick=@ModalOk>Ok</button>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick=@ModalCancel>Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

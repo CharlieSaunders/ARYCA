@@ -1,0 +1,28 @@
+﻿@using Common.DTO.Unlockables;
+
+<div class="modal fade show @Theme-modal" id="myModal" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+    <div class="modal-dialog @Theme-modal-dialog">
+        <div class="modal-content @Theme-modal-content">
+            <div class="modal-header @Theme-modal-header">
+                <h4 class="modal-title">Gift @Unlockable.Name</h4>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick="@ModalCancel">&times;</button>
+            </div>
+            <div class="modal-body @Theme-modal-body">
+                <p>This will cost 💎@Unlockable.Price </p>
+                 <EditForm Model="@_giftUnlockableRequest">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="form-group">
+                    <label class="col-md-3">Giftee</label>
+                    <InputText class="col-md-8" @bind-Value="_giftUnlockableRequest.GifteeReference" /> 
+                </div>
+                <br />
+                </EditForm>
+            </div>
+            <div class="modal-footer @Theme-modal-footer">
+                <button type="button" class="btn btn-success @Theme-btn-success" @onclick=@ModalOk>Ok</button>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick=@ModalCancel>Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

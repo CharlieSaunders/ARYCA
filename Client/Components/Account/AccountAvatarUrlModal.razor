@@ -1,0 +1,28 @@
+﻿@using Common.DTO.Unlockables
+
+<div class="modal fade show @Theme-modal" id="myModal" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+    <div class="modal-dialog @Theme-modal-dialog">
+        <div class="modal-content @Theme-modal-content">
+            <div class="modal-header @Theme-modal-header">
+                <h4 class="modal-title">Select an avatar</h4>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick="@ModalCancel">&times;</button>
+            </div>
+            <div class="modal-body @Theme-modal-body">
+                @if (UnlockedAvatars.Count() == 0)
+               {
+                   <h4>No avatars unlocked &#128542;</h4>
+               }
+                else
+                {
+                   @foreach (var avatar in UnlockedAvatars)
+                   {
+                    <div class="logo-pic">
+                        <img src='assets/userSvgs/@avatar.Value' class="img-responsive img-rounded" @onclick="(() => SetUrl(avatar))">
+                    </div>
+                   }
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

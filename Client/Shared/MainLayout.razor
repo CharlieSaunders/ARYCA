@@ -1,0 +1,21 @@
+﻿@inherits LayoutComponentBase
+@using Client.States;
+@using Client.States.Toast
+@inject UserState _userState;
+
+<div class="page"style="font-family: @_userState.GetFontFamily()">
+    <AuthorizeView>
+        <Authorized>
+            <div class="sidebar @_userState.GetUserTheme()-sidebar">
+                <NavMenu />
+            </div>
+        </Authorized>
+    </AuthorizeView>
+    <main>
+        <article class="content">
+            @Body
+        </article>
+    </main>
+</div>
+
+<Toaster />

@@ -1,0 +1,31 @@
+﻿@using Common.DTO.Unlockables
+<div class="modal fade show @Theme-modal" id="myModal" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+    <div class="modal-dialog @Theme-modal-dialog">
+        <div class="modal-content @Theme-modal-content">
+            <div class="modal-header @Theme-modal-header">
+                <h4 class="modal-title">Select login background</h4>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick="@ModalCancel">&times;</button>
+            </div>
+            <div class="modal-body @Theme-modal-body">
+                <div class="row px-3 mx-2">
+                    @if (Images.Count() == 0)
+                   {
+                       <h4>No images &#128542;</h4>
+                   }
+                    else
+                    {
+                       @foreach (var image in Images)
+                       {
+                        <div class="col-lg-2 p-2 px-2">
+                                <div class="logo-pic">
+                                    <img src='assets/backgrounds/@image' class="img-responsive img-rounded" style="height: 75px; width: 75px" @onclick="(() => SetUrl(image))">
+                                </div>
+                        </div>
+                       }
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

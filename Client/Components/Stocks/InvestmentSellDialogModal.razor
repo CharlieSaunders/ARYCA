@@ -1,0 +1,38 @@
+﻿@using Common.DTO.Stocks
+@using Common.Entities.Investments
+@using RawStockResponse = Common.Classes.Investments.RawStockResponse;
+@using InvestedStock = Common.Entities.Investments.UserInvestments;
+
+<div class="modal fade show @Theme-modal" id="myModal" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+    <div class="modal-dialog @Theme-modal-dialog">
+        <div class="modal-content @Theme-modal-content">
+            <div class="modal-header @Theme-modal-header">
+                <h4 class="modal-title">@MatchingStock.symbol</h4>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick="@ModalCancel">&times;</button>
+            </div>
+            <div class="modal-body @Theme-modal-body">
+                <p>💎1 = @MatchingStock.GetBasicPrice()</p>
+
+                <EditForm Model="@_stockSellRequest">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="form-group">
+                    <label class="col-md-3">Symbol</label>
+                        <InputText class="col-md-8" @bind-Value="MatchingStock.symbol" disabled />
+                    </div>
+                <br />
+                <div class="form-group">
+                    <label class="col-md-3">Share</label>
+                    <InputNumber class="col-md-8" @bind-Value="UserInvestment.Share" /> 
+                </div>
+                <br />
+                </EditForm>
+                <p>Total: 💎@GetTotalCost()</p>
+            </div>
+            <div class="modal-footer @Theme-modal-footer">
+                <button type="button" class="btn btn-success @Theme-btn-success" @onclick=@ModalOk>Ok</button>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick=@ModalCancel>Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

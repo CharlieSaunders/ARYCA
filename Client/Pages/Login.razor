@@ -1,0 +1,50 @@
+﻿@page "/Login"
+@using Client.Components
+@using Common.Entities.Configuration
+@using Common.Entities.Users
+@using Common.HttpClients;
+@using Client.ServicesBridge;
+@using Client.States;
+@using Client.States.Toast;
+@inject NavigationManager _navigationManager
+@inject GenericHttpClient _genericHttpClient;
+@inject AuthenticationStateProvider _authStateProvider;
+@inject UserState _userState;
+@inject ToasterService _toasterService;
+@inject ILocalStorageService _localStorage;
+
+ <div class="pageContainer">
+     <br /><br /><br /><br />
+     <div class="container" id="container">
+        @if (_displaySpinner)
+        {
+            <br />
+            <div class="text-center">
+              <div class="spinner-border" role="status">
+              </div>
+              <h4>Attempting login</h4>
+            </div>
+        }
+        else
+        {
+	        <div class="form-container sign-in-container">
+		        <form action="#">
+			        <h1>@_appConfig.ApplicationName</h1>
+                    <br>
+                        <EditForm Model="user" OnSubmit="HandleLogin">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <InputText id="username" @bind-Value="user.Username" class="form-control" />
+                            </div>
+                            <br />
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </EditForm>
+		        </form>
+	        </div>
+	        <div class="overlay-container">
+                <img class="d-block h-100" style="float: right;" src="assets/backgrounds/@_appConfig.LoginImageUrl">
+	        </div>
+        }
+        </div>
+       <Footer ShouldDisplay="true"></Footer>
+</div>

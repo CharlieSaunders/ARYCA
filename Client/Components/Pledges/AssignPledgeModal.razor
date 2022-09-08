@@ -1,0 +1,40 @@
+﻿@using Common.DTO.Pledges
+@using Common.Entities.Pledges;
+
+<div class="modal fade show @Theme-modal" id="myModal" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+    <div class="modal-dialog @Theme-modal-dialog">
+        <div class="modal-content @Theme-modal-content">
+            <div class="modal-header @Theme-modal-header">
+                <h4 class="modal-title">Assign @SelectedPledge.Name</h4>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick="@ModalCancel">&times;</button>
+            </div>
+            <div class="modal-body @Theme-modal-body">
+                 <p> @SelectedPledge.Details </p>
+                 <EditForm Model="@Request">
+                 <DataAnnotationsValidator />
+                 <ValidationSummary />
+                 <div class="form-group">
+                     <label class="col-md-3">Details</label>
+                     <InputText class="col-md-8" @bind-Value="Request.AdditionalInformation"/> 
+                 </div>
+                 <br>
+                 <div class="form-group">
+                     <label class="col-md-3">Username</label>
+                     <InputText class="col-md-8" @bind-Value="Request.AssigneeUsername"/> 
+                 </div>
+                 <br>
+                 <div class="form-group">
+                     <label class="col-md-3">Cost</label>
+                     <InputNumber class="col-md-8" @bind-Value="Request.Value"/> 
+                 </div>
+                 <br />
+                 </EditForm>
+
+            </div>
+            <div class="modal-footer @Theme-modal-footer">
+                <button type="button" class="btn btn-success @Theme-btn-success" @onclick=@ModalOk>Ok</button>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick=@ModalCancel>Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

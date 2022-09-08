@@ -1,0 +1,46 @@
+﻿.page-wrapper {
+    position: absolute;
+    top: 2.5%;
+    overflow: scroll !important;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    height: 100vh;
+    width: 92vw;
+}
+
+    .page-wrapper::-webkit-scrollbar {
+        display: none;
+    }
+
+
+.logo-pic-market {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+img{
+    object-fit: cover !important;
+    height: 100% !important;
+    width: 100% !important;
+    padding: 5px !important;
+}
+
+@media only screen and (max-width: 450px) and (-webkit-device-pixel-ratio: 2) {
+    .marketplace-override-overflow {
+        position: absolute;
+        top: 15vh;
+        left: 4%;
+        width: 100vw;
+    }
+
+    .clearBottom{
+        height: 15vh;
+        width: 100vw;
+        position: absolute;
+        bottom: 0px;
+    }
+}

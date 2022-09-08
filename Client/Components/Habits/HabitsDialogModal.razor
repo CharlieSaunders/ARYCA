@@ -1,0 +1,45 @@
+﻿@using Common.Entities.Habits;
+
+<div class="modal fade show @Theme-modal" id="myModal" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+    <div class="modal-dialog @Theme-modal-dialog">
+        <div class="modal-content @Theme-modal-content">
+            <div class="modal-header @Theme-modal-header">
+                <h4 class="modal-title">Add Habit</h4>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick=@ModalCancel>&times;</button>
+            </div>
+            <div class="modal-body @Theme-modal-body">
+                <table class="table @Theme-table">
+                        <thead class="@Theme-table-head">
+                            <tr>
+                                <th>Name</th>
+                                <th>Value</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody class="@Theme-table-body">
+                            @if (SelectedHabits == null)
+                            {
+                                <tr><td rowspan="2"><em>Loading...</em></td></tr>
+                            }
+                            else
+                            {
+                                @foreach (var habit in SelectedHabits)
+                                {
+                                    <tr>
+                                        <td>@habit.Name</td>
+                                        <td>@habit.Value</td>
+                                        <td>
+                                            <button class="btn btn-primary @Theme-btn-primary" @onclick="(() => AssignHabit(habit))"><span class="oi oi-plus" aria-hidden="true"></span></button>  
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>   
+            </div>
+            <div class="modal-footer @Theme-modal-footer">
+                <button type="button" class="btn btn-warning @Theme-btn-warning" @onclick=@ModalCancel>Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+﻿.footer {
+    color: #fff;
+    font-size: 14px;
+    bottom: 0;
+    text-align: center;
+    z-index: 999;
+    overflow: hidden;
+    height: 15%;
+    margin-bottom: 100px;
+    margin-top: 50px;
+}

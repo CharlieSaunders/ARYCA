@@ -1,0 +1,167 @@
+﻿.darkmode-card {
+    background-color: #050505 !important;
+    color: #f2f2f2 !important;
+    border-radius: 10px !important;
+}
+
+.darkmode-card-header {
+    background-color: #050505 !important;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.darkmode-card-body {
+    background-color: #1e1e1e !important;
+    border-radius: 0 0 10px 10px !important;
+}
+
+.darkmode-card-footer {
+    background-color: #1e1e1e !important;
+    border-radius: 0 0 10px 10px !important;
+}
+
+.darkmode-input {
+    background-color: #1A465D !important;
+    color: #f2f2f2 !important;
+}
+
+.darkmode-modal {
+    color: #f2f2f2 !important;
+}
+
+.darkmode-modal-dialog {
+    background-color: #222 !important;
+}
+
+.darkmode-modal-content {
+    background-color: #050505 !important;
+}
+
+.darkmode-modal-header {
+    background-color: #050505 !important;
+}
+
+.darkmode-modal-body {
+    background-color: #1e1e1e !important;
+}
+
+.darkmode-modal-footer {
+    background-color: #1e1e1e !important;
+}
+
+.darkmode-table {
+    color: #f2f2f2 !important;
+}
+
+.darkmode-table-th {
+    color: #f2f2f2 !important;
+}
+
+.darkmode-table-tr {
+    color: #f2f2f2 !important;
+}
+
+.darkmode-navbar {
+    background-color: #050505 !important;
+}
+
+.darkmode-sidebar {
+    background-color: #1e1e1e !important;
+}
+
+.darkmode-navbar-lower {
+    background-color: #1e1e1e !important;
+}
+
+.darkmode-btn-primary {
+    background-color: #444 !important;
+    border: 1px solid #222 !important;
+    border-color: #222!important;
+}
+
+.darkmode-btn-secondary {
+    background-color: #444 !important;
+    border: 1px solid #222 !important;
+    border-color: #222 !important;
+}
+
+.darkmode-btn-danger {
+    background-color: #444 !important;
+    border: 1px solid #222 !important;
+    border-color: #222 !important;
+}
+
+.darkmode-btn-warning {
+    background-color: #444 !important;
+    border: 1px solid #222 !important;
+    border-color: #222 !important;
+    color: #fff!important;
+}
+
+.darkmode-btn-success {
+    background-color: #444 !important;
+    border: 1px solid #222 !important;
+    border-color: #222 !important;
+    color: #fff !important;
+}
+
+.darkmode-btn-primary:hover {
+    animation-name: shake;
+    animation-duration: 1s;
+}
+.darkmode-btn-secondary:hover {
+    animation-name: shake;
+    animation-duration: 1s;
+}
+.darkmode-btn-danger:hover {
+    animation-name: shake;
+    animation-duration: 1s;
+}
+.darkmode-btn-warning:hover {
+    animation-name: shake;
+    animation-duration: 1s;
+}
+.darkmode-btn-success:hover {
+    animation-name: shake;
+    animation-duration: 1s;
+}
+
+.darkmode-accordian-header {
+    background-color: #050505 !important;
+    border-radius: 10px 10px 0 0 !important;
+    color: #f2f2f2 !important;
+}
+
+.darkmode-accordian-body {
+    background-color: #1e1e1e !important;
+    border-radius: 0 0 0 0 !important;
+    color: #f2f2f2 !important;
+}
+
+.darkmode-accordian-button {
+    background-color: #444 !important;
+    border: 1px solid #222 !important;
+    border-color: #222 !important;
+    color: #f2f2f2!important;
+}
+
+.darkmode-accordian-button:focus {
+    outline: none;
+}
+
+@keyframes shake {
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%, 80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%, 60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}

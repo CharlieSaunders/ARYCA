@@ -1,0 +1,293 @@
+﻿@page "/Account"
+@using Client.Components
+@using Client.Components.Account
+@using Client.States.Toast
+@using Common.Classes.Achievements
+@using Common.Classes.Users
+@using Common.DTO.Unlockables
+@using Common.DTO.Users
+@using Common.Entities.Configuration
+@using Common.Entities.Unlockables
+@using Common.Entities.Users
+@using Common.HttpClients;
+@using Client.ServicesBridge;
+@using Client.States;
+@inject NavigationManager _navigationManager
+@inject GenericHttpClient _genericHttpClient;
+@inject AuthenticationStateProvider _authStateProvider;
+@inject UserState _userState;
+@inject ToasterService _toasterService;
+@inject ILocalStorageService _localStorage;
+
+<AuthorizeView>
+
+    <NotAuthorized>
+    @if (true) { _navigationManager.NavigateTo("Login"); }
+    </NotAuthorized>
+
+    <Authorized>
+    <div class="page-wrapper">
+        <div class="row">
+
+            @* Account *@
+            <div class="col-lg-3 p-3">
+                <div class="card @_user.Theme-card">
+                    <div class="card-header @_user.Theme-card-header">
+                        <h3>Account</h3>
+                    </div>
+                    <div class="card-body @_user.Theme-card-body">
+                        @if (@_userRetreived)
+                       {
+                            <EditForm Model="@_user" Context="UserEditForm">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+                            <p>User Details</p>
+                                    <hr>
+                            <div class="form-group">
+                                <label class="col-md-4">Name</label>
+                                <InputText class="col-md-7" @bind-Value="_user.FirstName" />
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <label class="col-md-4">Surname</label>
+                                <InputText class="col-md-7" @bind-Value="_user.SecondName" />
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <label class="col-md-4">Title</label>
+                                <InputSelect  class="col-md-7" @bind-Value="_user.Title">
+                                    <option value="@_user.Title" disabled>(Active) @_user.Title</option>
+                                    @if(_unlockedTitles is null || _unlockedTitles.Count < 1)
+                                    {
+                                        <option value="">No Titles Available</option>
+                                    }
+                                    else
+                                    {
+                                       @foreach (var title in _unlockedTitles)
+                                       {
+                                           <option value="@title.Value">@title.Name</option>
+                                       }
+                                    }
+
+                                </InputSelect>
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <label class="col-md-4">Username</label>
+                                <InputText class="col-md-7" @bind-Value="_user.Username" /> 
+                            </div>
+                            <br>
+                                    <hr>
+                            <p>Preferences</p>
+                            <hr>
+                            <div class="form-group">
+                                <label class="col-md-4">Font</label>
+                                <InputSelect  class="col-md-7" @bind-Value="_user.FontFamily">
+                                    <option value="@_user.FontFamily" disabled>(Active) @_user.FontFamily</option>
+                                    @if(_unlockedFonts is null)
+                                    {
+                                        <option value="">No fonts Available</option>
+                                    }
+                                    else
+                                    {
+                                       @foreach (var font in _unlockedFonts)
+                                       {
+                                           <option value="@font.Value">@font.Name</option>
+                                       }
+                                    }
+                                </InputSelect>
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <label class="col-md-4">Particles</label>
+                                <InputSelect  class="col-md-7" @bind-Value="_user.ParticleEffect">
+                                    <option value="@_user.ParticleEffect" disabled>(Active) @_user.ParticleEffect</option>
+                                    @if (_unlockedParticles is null || _unlockedParticles.Count < 1)
+                                    {
+                                        <option value="">No Particles Available</option>
+                                    }
+                                    else
+                                    {
+                                       @foreach (var particle in _unlockedParticles)
+                                       {
+                                           <option value="@particle.Value">@particle.Name</option>
+                                       }
+                                    }
+
+                                </InputSelect>
+                            </div>
+                            <br />
+
+                            <div class="form-group">
+                                <label class="col-md-4">Theme</label>
+                                <InputSelect  class="col-md-7" @bind-Value="_user.Theme">
+                                    <option value="@_user.Theme" disabled>(Active) @GetUserTheme(@_user.Theme)</option>
+                                    @if(_unlockedThemes is null)
+                                    {
+                                        <option value="">No Themes Available</option>
+                                    }
+                                    else
+                                    {
+                                       @foreach (var theme in _unlockedThemes)
+                                       {
+                                           <option value="@theme.Value">@theme.Name</option>
+                                       }
+                                    }
+                                </InputSelect>
+                            </div>
+                            <br />
+                            </EditForm>
+                             <div class="logo-pic">
+                                <img src='assets/userSvgs/@_user.AvatarUrl' class="img-responsive img-rounded" style="height: 45px; width: auto;">
+                            </div>
+                            <button type="button" class="btn btn-primary @_user.Theme-btn-primary" style="float:right"  @onclick="(() => OpenDialogModal(_user.AvatarUrl, ModalType.Create))">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </button>
+                         
+                       }
+                    </div>
+                    <div class="card-footer @_user.Theme-card-footer">
+                        <button class="btn btn-secondary @_user.Theme-btn-secondary" @onclick="(() => Update())"><span class="oi oi-check" aria-hidden="true"></span></button> 
+                    </div>
+                </div>
+            </div>
+
+            @* Stats & Achievements *@
+            <div class="col-lg-5 p-3">
+
+                @* Stats *@
+                <div class="card @_user.Theme-card">
+                    <div class="card-header @_user.Theme-card-header">
+                        <h3>Stats</h3>
+                    </div>
+                    <div class="card-body @_user.Theme-card-body">
+                       @if (_user is null)
+                       {
+                           <p>Loading...</p>
+                       }
+                       else
+                       {
+                           <table class="table @_user.Theme-table">
+                               <thead class="@_user.Theme-table-head">
+                                   <tr>
+                                       <th><Tooltip Text="Trade purchases made">💹</Tooltip></th>
+                                       <th><Tooltip Text="Habits completed">🔄</Tooltip></th>
+                                       <th><Tooltip Text="Pledges completed">🎯</Tooltip></th>
+                                       <th><Tooltip Text="Gifts given">🎁</Tooltip></th>
+                                       <th><Tooltip Text="Trade profit">💸</Tooltip></th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                <tr>
+                                    <td>@_user.Stats.TradesMade</td>
+                                    <td>@_user.Stats.HabitsCompleted</td>
+                                    <td>@_user.Stats.PledgesCompleted</td>
+                                    <td>@_user.Stats.GiftsGiven</td>
+                                    <td>@if (@_user.Stats.TradeProfit < 0)
+                                        {
+                                            <span style="color: red">@_user.Stats.TradeProfit</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color: green">@_user.Stats.TradeProfit</span>
+                                        }
+                                    </td>
+                                </tr>
+                               </tbody>
+                           </table> 
+                       }
+                    </div>
+                </div>
+                <br />
+
+                @* Achievements *@
+                <div class="card @_user.Theme-card">
+                    <div class="card-header @_user.Theme-card-header">
+                        <h3>Achievements</h3>
+                    </div>
+                    <div class="card-body @_user.Theme-card-body">
+                        @if(_userAchievements is null || _userAchievements.Count == 0)
+                        {
+                            <p>No Achievements unlocked</p>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                @foreach (var achievement in _userAchievements)
+                                {
+                                    <div class="col-lg-2 p-4">
+                                        <div class="text-center p-0 m-0">
+                                            <Tooltip Text="@achievement.Title">
+                                                <img src="/assets/achievements/@achievement.ImageUrl" alt="" width="25" class="img-fluid rounded-circle mb-1 img-thumbnail shadow-sm d-block" style="width: 75px">
+                                                <p class="text-center p-0 m-0">x @achievement.TimesUnlocked</p>
+                                            </Tooltip>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @* Recent Transactions *@
+            <div class="col-lg-4 p-3">
+                <div class="card @_user.Theme-card">
+                    <div class="card-header @_user.Theme-card-header">
+                        <h3>Recent Transactions</h3>
+                        <p>Balance: 💎@_userState.GetUserBalance()</p>
+                    </div>
+                    <div class="card-body @_user.Theme-card-body">
+                            @if(_user.Transactions is null || _user.Transactions.Count() == 0)
+                            {
+                                <h4 style="text-align: center;">No recent transactions &#128077;</h4>
+                            }
+                            else
+                            {
+                             <table class="table @_user.Theme-table">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Type</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach(var transaction in _user.Transactions)
+                                {
+
+                                    <tr class="@_user.Theme-table-tr">
+                                        <td>@transaction.Added.ToShortDateString()</td>
+                                        <td>@transaction.Type</td>
+                                        <td>
+                                            @if (transaction.Value < 0)
+                                            {
+                                                <span class="oi oi-arrow-thick-bottom" style="color: red"></span>
+                                                <span style="color: red">&nbsp; 💎@transaction.Value</span> 
+                                            }
+                                            else
+                                            {
+                                              <span class="oi oi-arrow-thick-top" style="color: green"></span>
+                                              <span style="color: green">&nbsp; 💎@transaction.Value</span> 
+                                            }
+                                        </td>
+                                     </tr>
+                                }
+                                </tbody>
+                            </table>
+                            }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <Footer ShouldDisplay="false"></Footer>
+    </div>
+    </Authorized>
+</AuthorizeView>
+
+@if(_avatarSelectorModalOpen)
+{
+    <AccountAvatarUrlModal AvatarUrl="_currentAvatarUrl" OnClose="@OnDialogClose" DisplayType="_modalType" Theme="@_user.Theme" UnlockedAvatars="_unlockedAvatars"></AccountAvatarUrlModal>
+}

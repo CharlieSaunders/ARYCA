@@ -1,0 +1,35 @@
+﻿@using Common.DTO.Stocks
+@using RawStockResponse = Common.Classes.Investments.RawStockResponse;
+
+<div class="modal fade show @Theme-modal" id="myModal" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+    <div class="modal-dialog @Theme-modal-dialog">
+        <div class="modal-content @Theme-modal-content">
+            <div class="modal-header @Theme-modal-header">
+                <h4 class="modal-title">@SelectedStock.symbol</h4>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick="@ModalCancel">&times;</button>
+            </div>
+            <div class="modal-body @Theme-modal-body">
+                <p>💎1 = @SelectedStock.GetBasicPrice()</p>
+                <EditForm Model="@_stockPurchaseRequest">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="form-group">
+                    <label class="col-md-3">Symbol</label>
+                    <InputText class="col-md-8" @bind-Value="SelectedStock.symbol" disabled/> 
+                </div>
+                <br />
+                <div class="form-group">
+                    <label class="col-md-3">Share</label>
+                    <InputNumber class="col-md-8" @bind-Value="_stockPurchaseRequest.Share" /> 
+                </div>
+                <br />
+                </EditForm>
+                <p>Total Cost: 💎@GetTotalCost()</p>
+            </div>
+            <div class="modal-footer @Theme-modal-footer">
+                <button type="button" class="btn btn-success @Theme-btn-success" @onclick=@ModalOk>Ok</button>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick=@ModalCancel>Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

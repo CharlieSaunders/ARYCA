@@ -1,0 +1,348 @@
+﻿@page "/Marketplace"
+@using Client.Components
+@using Client.Components.Market
+@using Client.ServicesBridge
+@using Client.States
+@using Client.States.Toast
+@using Common.DTO.Unlockables
+@using Common.Entities.Unlockables
+@using Common.HttpClients;
+@inject NavigationManager _navigationManager;
+@inject GenericHttpClient _genericHttpClient;
+@inject UserState _userState;
+@inject ToasterService _toasterService;
+@inject ILocalStorageService _localStorage;
+
+<AuthorizeView>
+    <NotAuthorized>
+    @if (true) { _navigationManager.NavigateTo("Login"); }
+    </NotAuthorized>
+    <Authorized>
+        <div class="page-wrapper">
+
+            @* Avatars *@
+            <div class="accordian" id="accordianAvatar">
+                <div class="accordion-item">
+                    <h2 class="accordion-header @_userTheme-accordian-header" id="headingAvatars">
+                      <button class="accordion-button @_userTheme-accordian-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAvatars" aria-expanded="true" aria-controls="collapseAvatars">
+                        Avatars
+                      </button>
+                    </h2>
+                    <div id="collapseAvatars" class="accordion-collapse collapse show" aria-labelledby="headingAvatars" data-bs-parent="#accordianAvatar">
+                        <div class="accordion-body @_userTheme-accordian-body">
+                           <div class="row px-3">
+                              @if (!_avatarsLoaded)
+                              {
+                                <div class="text-center">
+                                  <div class="spinner-border" role="status">
+                                  </div>
+                                </div>
+                              }
+                              else
+                              {
+                                   @if (_lockedAvatars is null || _lockedAvatars.Count() == 0)
+                                   {
+                                        <h3>There are no avatars available &#128078;</h3>
+                                   }
+                                   else
+                                   {
+                                       @foreach (var item in _lockedAvatars)
+                                      {
+                                      <div class="col-lg-2 p-2">
+                                            <div class="card @_userTheme-card" style="background-color: #444; border: none; color: #f2f2f2">
+                                                <div class="card-header @_userTheme-card-header">
+                                                    <h5>
+                                                        <span style="float: left">@item.Name</span> 
+                                                        <span style="float: right">💎 @GetPrice(@item.Price) </span>
+                                                    </h5>
+                                                </div>
+                                                   <div class="logo-pic-market">
+                                                        <img src='assets/userSvgs/@item.Value' class="img-responsive img-rounded img-logo-pic-market">
+                                                    </div>
+                                                    <br>
+                                                    @if (@_userState.GetUserBalance() - @item.Price < 0)
+                                                    {
+                                                        <p class="text-muted" style="text-align: center">🔒</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>
+                                                            <button class="btn btn-success @_userTheme-btn-success" style="float: left" @onclick="(() => Unlock(item))">Unlock</button>
+                                                            <button class="btn btn-warning @_userTheme-btn-warning" style="float: right" @onclick="(() => OpenGiftDialogModal(item))">Gift</button>
+                                                        </span>
+                                                    }
+                                            </div>
+                                      </div>
+                                      }
+                                   }
+                              }
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+
+            @* Fonts *@
+            <div class="accordian" id="accordianFont">
+                <div class="accordion-item">
+                    <h2 class="accordion-header @_userTheme-accordian-header" id="headingFont">
+                        <button class="accordion-button @_userTheme-accordian-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFont" aria-expanded="true" aria-controls="collapseFont">
+                            Fonts
+                        </button>
+                    </h2>
+                    <div id="collapseFont" class="accordion-collapse collapse" aria-labelledby="headingFont" data-bs-parent="#accordianFont">
+                        <div class="accordion-body @_userTheme-accordian-body">
+                            <div class="row px-3">
+                                @if (!_fontsLoaded)
+                                {
+                                    <div class="text-center">
+                                        <div class="spinner-border" role="status">
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    @if (_lockedFonts is null || _lockedFonts.Count == 0)
+                                    {
+                                        <h3>There are no fonts available &#128552;</h3>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var item in _lockedFonts)
+                                        {
+                                            <div class="col-lg-2 p-2" style="font-family: @item.Value">
+                                                <div class="card @_userTheme-card" style="background-color: #444; border: none; color: #f2f2f2" onclick="Particles(event, this)" data-type="@item.Value" id="@item.UnlockableReference">
+                                                    <h5 class="p-2">
+                                                        <span style="float: left">@item.Name</span>
+                                                        <span style="float: right">💎 @GetPrice(@item.Price) </span>
+                                                    </h5>
+                                                    <br>
+                                                    <p style="text-align: center">Lorem ipsum doler sit amet</p>
+                                                    @if (@_userState.GetUserBalance() - @item.Price < 0)
+                                                    {
+                                                        <p class="text-muted" style="text-align: center">🔒</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>
+                                                            <button class="btn btn-success @_userTheme-btn-success" style="float: left" @onclick="(() => Unlock(item))">Unlock</button>
+                                                            <button class="btn btn-warning @_userTheme-btn-warning" style="float: right" @onclick="(() => OpenGiftDialogModal(item))">Gift</button>
+                                                        </span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+
+            @* Particles *@
+            <div class="accordian" id="accordianParticle">
+                <div class="accordion-item">
+                    <h2 class="accordion-header @_userTheme-accordian-header" id="headingParticle">
+                        <button class="accordion-button @_userTheme-accordian-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseParticle" aria-expanded="true" aria-controls="collapseParticle">
+                            Particles
+                        </button>
+                    </h2>
+                    <div id="collapseParticle" class="accordion-collapse collapse" aria-labelledby="headingParticle" data-bs-parent="#accordianParticle">
+                        <div class="accordion-body @_userTheme-accordian-body">
+                            <div class="row px-3">
+                                @if (!_particlesLoaded)
+                                {
+                                    <div class="text-center">
+                                        <div class="spinner-border" role="status">
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    @if (_lockedParticles is null || _lockedParticles.Count == 0)
+                                    {
+                                        <h3>There are no Particle Effects available &#128552;</h3>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var item in _lockedParticles)
+                                        {
+                                            <div class="col-lg-2 p-2">
+                                                <div class="card @_userTheme-card" style="background-color: #444; border: none; color: #f2f2f2" onclick="Particles(event, this)" data-type="@item.Value" id="@item.UnlockableReference">
+                                                    <h5 class="p-2">
+                                                        <span style="float: left">@item.Name</span>
+                                                        <span style="float: right">💎 @GetPrice(@item.Price) </span>
+                                                    </h5>
+                                                    <br>
+                                                    <p style="text-align: center">Click me</p>
+                                                    @if (@_userState.GetUserBalance() - @item.Price < 0)
+                                                    {
+                                                        <p class="text-muted" style="text-align: center">🔒</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>
+                                                            <button class="btn btn-success @_userTheme-btn-success" style="float: left" @onclick="(() => Unlock(item))">Unlock</button>
+                                                            <button class="btn btn-warning @_userTheme-btn-warning" style="float: right" @onclick="(() => OpenGiftDialogModal(item))">Gift</button>
+                                                        </span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+
+            @* Themes *@
+            <div class="accordian" id="accordianTheme">
+                <div class="accordion-item">
+                    <h2 class="accordion-header @_userTheme-accordian-header" id="headingThemes">
+                      <button class="accordion-button @_userTheme-accordian-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThemes" aria-expanded="true" aria-controls="collapseThemes">
+                        Themes
+                      </button>
+                    </h2>
+                        <div id="collapseThemes" class="accordion-collapse collapse" aria-labelledby="headingThemes" data-bs-parent="#accordianAvatar">
+                            <div class="accordion-body @_userTheme-accordian-body">
+                                 <div class="row px-3">
+                                     @if (!_themesLoaded)
+                                    {
+                                        <div class="text-center">
+                                          <div class="spinner-border" role="status">
+                                          </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @if (_lockedThemes is null || _lockedThemes.Count() == 0)
+                                       {
+                                            <h3>There are no themes available &#127912;</h3>
+                                       }
+                                       else
+                                       {
+                                           @foreach (var item in _lockedThemes)
+                                          {
+                                          <div class="col-lg-2 p-2">
+                                                <div class="card @item.Value-card">
+                                                    <div class="card-header @item.Value-card-header">
+                                                        <h5>
+                                                            <span style="float: left">@item.Name</span> 
+                                                            <span style="float: right">💎 @GetPrice(@item.Price) </span>
+                                                        </h5>
+                                                    </div>
+                                                    <div class="card-body @item.Value-card-body">
+                                                        <p>Lorem ipsum doler amet</p>
+                                                    </div>
+                                                    <div class="card-footer @item.Value-card-footer">
+                                                        <button class="btn btn-primary @item.Value-btn-primary" @onclick="(() => OpenDialogModal(item))"><span class="oi oi-plus" aria-hidden="true"></span></button>
+                                                        <button class="btn btn-secondary @item.Value-btn-secondary" @onclick="(() => OpenDialogModal(item))"><span class="oi oi-minus" aria-hidden="true"></span></button>
+                                                        <button class="btn btn-danger @item.Value-btn-danger" @onclick="(() => OpenDialogModal(item))"><span class="oi oi-trash" aria-hidden="true"></span></button>
+                                                        <button class="btn btn-warning @item.Value-btn-warning" @onclick="(() => OpenDialogModal(item))"><span class="oi oi-account-login" aria-hidden="true"></span></button>
+                                                    </div>
+                                                    @if (@_userState.GetUserBalance() - @item.Price < 0)
+                                                    {
+                                                        <p class="text-muted" style="text-align: center">🔒</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>
+                                                            <button class="btn btn-success @_userTheme-btn-success" style="float: left" @onclick="(() => Unlock(item))">Unlock</button>
+                                                            <button class="btn btn-warning @_userTheme-btn-warning" style="float: right" @onclick="(() => OpenGiftDialogModal(item))">Gift</button>
+                                                        </span>
+                                                    }
+                                                </div>
+                                            </div>
+                                          }
+                                       }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <br />
+
+            @* Titles *@
+            <div class="accordian" id="accordianTitle">
+                <div class="accordion-item">
+                    <h2 class="accordion-header @_userTheme-accordian-header" id="headingTitles">
+                      <button class="accordion-button @_userTheme-accordian-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTitles" aria-expanded="true" aria-controls="collapseTitles">
+                        Titles
+                      </button>
+                    </h2>
+                        <div id="collapseTitles" class="accordion-collapse collapse" aria-labelledby="headingTitles" data-bs-parent="#accordianTitle">
+                           <div class="accordion-body @_userTheme-accordian-body">
+                                <div class="row px-3">
+                                @if(!_titlesLoaded)
+                                {
+                                    <div class="text-center">
+                                      <div class="spinner-border" role="status">
+                                      </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    @if (_lockedTitles is null || _lockedTitles.Count() == 0)
+                                       {
+                                            <h3>There are no titles available &#128552;</h3>
+                                       }
+                                       else
+                                       {
+                                           @foreach (var item in _lockedTitles)
+                                          {
+                                          <div class="col-lg-2 p-2">
+                                                <div class="card @_userTheme-card" style="background-color: #444; border: none; color: #f2f2f2">
+                                                    <div class="card-header @_userTheme-card-header">
+                                                        <h5>
+                                                            <span style="float: left">@item.Name</span> 
+                                                            <span style="float: right">💎 @GetPrice(@item.Price) </span>
+                                                        </h5>
+                                                    </div>
+                                                    <br>
+                                                    <p style="text-align: center"> @item.Value @_userState.GetFirstName()</p>
+                                                    @if (@_userState.GetUserBalance() - @item.Price < 0)
+                                                    {
+                                                         <p class="text-muted" style="text-align: center">🔒</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>
+                                                            <button class="btn btn-success @_userTheme-btn-success" style="float: left" @onclick="(() => Unlock(item))">Unlock</button>
+                                                            <button class="btn btn-warning @_userTheme-btn-warning" style="float: right" @onclick="(() => OpenGiftDialogModal(item))">Gift</button>
+                                                        </span>
+                                                    }
+
+                                                </div>
+                                          </div>
+                                          }
+                                       }
+                                    }
+                            </div>
+                            </div>
+                          </div>
+                     </div>
+                </div>
+            <br />
+
+            <Footer ShouldDisplay="false"></Footer>
+        </div>
+        
+    </Authorized>
+</AuthorizeView>
+
+@if(_demoModalOpened)
+{
+    <DemoMarketModal OnClose="@OnDialogClose" Theme="@_demoTheme" ></DemoMarketModal>
+}
+
+@if(_giftingModal)
+{
+    <GiftUnlockableModal OnClose="@OnGiftDialogClose" Unlockable="_selectedGift" Theme="@_userTheme" ></GiftUnlockableModal>
+}

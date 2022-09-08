@@ -1,0 +1,304 @@
+﻿@page "/Personals"
+@using Client.Components.Habits
+@using Client.ServicesBridge
+@using Client.States.Toast
+@using Common.DTO.Habits
+@using Common.Entities.Habits
+@using Common.HttpClients;
+@using Client.States;
+@using Common.Entities.Pledges;
+@using Client.Components.Pledges;
+@using Common.DTO.Pledges;
+@using Client.Components;
+@inject NavigationManager _navigationManager;
+@inject GenericHttpClient _genericHttpClient;
+@inject UserState _userState;
+@inject ToasterService _toasterService;
+@inject ILocalStorageService _localStorage;
+
+<AuthorizeView>
+    <NotAuthorized>
+    @if (true) { _navigationManager.NavigateTo("Login"); }
+    </NotAuthorized>
+    <Authorized>
+    <div class="page-wrapper">
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="card @_userTheme-card">
+                    <div class="card-header @_userTheme-card-header">
+                        Your pledges
+                    </div>
+                    <div class="card-body @_userTheme-card-body">
+                    @if(!_assignedPledges)
+                    {
+                            <div class="text-center">
+                              <div class="spinner-border" role="status">
+                              </div>
+                            </div>
+                    }
+                    else
+                    {
+                            @if(_assignedToUserPledges is null || _assignedToUserPledges.Count() == 0)
+                            {
+                                <h4 style="text-align: center;">No Pledges with you &#128077;</h4>
+                            }
+                            else
+                            {
+                             <table class="table @_userTheme-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach(var pledgeResponse in _assignedToUserPledges)
+                                {
+
+                                    <tr class="@_userTheme-table-tr">
+                                        <td>@pledgeResponse.Name</td>
+                                        <td>
+                                           <button class="btn btn-primary @_userTheme-btn-primary" style="float:right"  @onclick="(() => OpenAssignedPledgeModal(pledgeResponse, ModalType.Update))">
+                                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                                           </button>
+                                        </td>
+                                     </tr>
+                                }
+                                </tbody>
+                            </table>
+                            }
+                    }
+
+                    </div>
+                    <div class="card-footer @_userTheme-card-footer"></div>
+                </div>
+            </div>
+
+            <div class="col-lg-2"></div>
+
+            <div class="col-lg-5">
+                <div class="card @_userTheme-card">
+                    <div class="card-header @_userTheme-card-header">
+                        In the ether
+                    </div>
+                    <div class="card-body @_userTheme-card-body">
+                    @if (!_allAssignedPledgesLoaded)
+                   {
+                             <div class="text-center">
+                              <div class="spinner-border" role="status">
+                              </div>
+                            </div>
+                   }
+                   else
+                   {
+                       @if(_allAssigned is null || _allAssigned.Count() == 0)
+                            {
+                                <h4 style="text-align: center;">No Pledges with anyone &#128557;</h4>
+                            }
+                            else
+                            {
+                            <table class="table @_userTheme-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Status</th>
+                                        <th>With</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach(var pledge in _allAssigned)
+                                {
+                                    <tr class="@_userTheme-table-tr">
+                                        <td>@pledge.Name</td>
+                                        <td>@pledge.Status</td>
+                                        <td>
+                                            @if (pledge.IsWithYou)
+                                           {
+                                               <img src="assets/userSvgs/@_userState.GetAvatarUrl()" style="height: 25px; width: 25px;">
+                                           }
+                                           else
+                                           {
+                                               string url = pledge.Assignee.Reference == @_userState.GetUserReference() ? pledge.Assigner.AvatarUrl : pledge.Assignee.AvatarUrl;
+                                               <img src="assets/userSvgs/@url" style="height: 25px; width: 25px;">
+                                           }
+                                        
+                                        </td>
+                                     </tr>
+                                }
+                               </tbody>
+                            </table>
+                            }
+                   }
+                    </div>
+                    <div class="card-footer @_userTheme-card-footer"></div>
+                </div>
+            </div>
+        </div>
+
+        <br /> <br />
+
+        <div class="row">
+            <div class="col-lg-5 p-3">
+                <div class="card @_userTheme-card">
+                    <div class="card-header @_userTheme-card-header">
+                        Available Pledges
+                       <button type="button" class="btn btn-primary @_userTheme-btn-primary" style="float:right"  @onclick="(() => OpenDialogModal(new Pledge(), ModalType.Create))">
+                            <span class="oi oi-plus" aria-hidden="true"></span>
+                       </button>
+                    </div>
+                    <div class="card-body @_userTheme-card-body">
+                    @if(!_allPledgesLoaded)
+                    {
+                            <div class="text-center">
+                              <div class="spinner-border" role="status">
+                              </div>
+                            </div>
+                    }
+                    else
+                    {
+                        @if(_allPledges is null || _allPledges.Count() == 0)
+                            {
+                                <h4 style="text-align: center;">No Pledges configured &#128561; &#129488;</h4>
+                            }
+                            else
+                            {
+                                <table class="table @_userTheme-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach(var pledge in _allPledges)
+                                {
+                                    <tr class="@_userTheme-table-tr">
+                                        <td>@pledge.Name</td>
+                                        <td>
+                                           <button class="btn btn-danger @_userTheme-btn-danger" style="float:right"  @onclick="(() => DeletePledge(pledge))">
+                                                <span class="oi oi-trash" aria-hidden="true"></span>
+                                           </button>
+                                            <button class="btn btn-primary @_userTheme-btn-primary" style="float:right; margin-right: 5px"  @onclick="(() => OpenDialogModal(pledge, ModalType.Update))">
+                                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                                           </button>
+                                           <button class="btn btn-primary @_userTheme-btn-primary" style="float:right; margin-right: 5px"  @onclick="(() => OpenAssignDialogModal(new AssignPledgeRequest(), pledge, ModalType.Assign))">
+                                                <span class="oi oi-share" aria-hidden="true"></span>
+                                           </button>
+                                        </td>
+                                     </tr>
+                                }
+                                </tbody>
+                            </table>
+                            }
+                    }
+                        
+                    </div>
+                    <div class="card-footer @_userTheme-card-footer"></div>
+                </div>
+            </div>
+
+             <div class="col-lg-2"></div>
+
+             <div class="col-lg-5 p-3">
+                    <div class="card @_userTheme-card">
+                        <div class="card-header @_userTheme-card-header">
+                            Subscribed Habits
+                            <button type="button" class="btn btn-primary @_userTheme-btn-primary" style="float:right" @onclick="(() => OpenDialogModal(new Habit(), ModalType.Create))">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </button>
+                            <button type="button" class="btn btn-primary @_userTheme-btn-primary" style="float:right ; margin-right: 5px;" @onclick="(() => OpenDialogModal(_allHabits, ModalType.Select))">
+                                <span class="oi oi-plus" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="card-body @_userTheme-card-body">
+                            @if (!_assignedHabitsLoaded)
+                            {
+                                <div class="text-center">
+                                    <div class="spinner-border" role="status">
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                @if (_assignedHabits == null || _assignedHabits.Count() == 0)
+                                {
+                                    <h4>No subscribed habits &#128534;</h4>
+                                }
+                                else
+                                {
+                                    <table class="table @_userTheme-table">
+                                        <thead class="@_userTheme-table-head">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>&nbsp;</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var habit in _assignedHabitsPaginated)
+                                            {
+                                                <tr class="@_userTheme-table-tr">
+                                                    <td>@habit.Name</td>
+                                                    <td>
+
+                                                        <button class="btn btn-primary  @_userTheme-btn-warning" style="float: right; margin-right: 5px;" @onclick="(() => OpenDialogModal(habit, ModalType.Update))"><span class="oi oi-pencil" aria-hidden="true"></span></button>
+                                                        @if (habit.Completable)
+                                                        {
+                                                            <button class="btn btn-secondary  @_userTheme-btn-secondary" style="float: right; margin-right: 5px;" @onclick="(() => Complete(habit))"><span class="oi oi-circle-check" aria-hidden="true"></span></button>
+                                                        }
+                                                        @if (habit.Completable)
+                                                        {
+                                                            <button class="btn btn-warning  @_userTheme-btn-warning" style="float: right;margin-right: 5px;" @onclick="(() => Unassign(habit))"><span class="oi oi-minus" aria-hidden="true"></span></button>
+                                                        }
+
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                            }
+
+
+                            @if (HABIT_PAGE >= 1)
+                            {
+                                <button class="btn btn-secondary @_userTheme-btn-secondary" style="float: left" @onclick="(() => ChangeHabitPage(-1))"><span class="oi oi-minus" aria-hidden="true"></span></button>
+                            }
+                            @if (HABIT_PAGE < HABIT_MAX_PAGE)
+                            {
+                                <button class="btn btn-secondary @_userTheme-btn-secondary" style="float: right" @onclick="(() => ChangeHabitPage(1))"><span class="oi oi-plus" aria-hidden="true"></span></button>
+                            }
+                        </div>
+                        <div class="card-footer @_userTheme-card-footer"></div>
+                    </div>
+                </div>
+        </div>
+
+            <Footer ShouldDisplay="false"></Footer>
+    </div>
+    </Authorized>
+</AuthorizeView>
+
+@if(_singlePledgeDialogModalOpen)
+{
+    <PledgesDialogModal SelectedPledge="_selectedPledge" OnClose="@OnDialogClose" DisplayType="_modalType" Theme="@_userTheme"></PledgesDialogModal>
+}
+
+@if(_assignPledgeDialogModalOpen)
+{
+    <AssignPledgeModal Request="_assignPledgeRequest" SelectedPledge="_selectedPledge" OnClose="@OnDialogClose" DisplayType="_modalType" Theme="@_userTheme"></AssignPledgeModal>
+}
+
+@if(_viewAssignedPledgeModalOpen)
+{
+    <ViewAssignedPledgeModal SelectedPledge="_assignedPledgeResponse" OnClose="@OnDialogClose" DisplayType="_modalType" Theme="@_userTheme"></ViewAssignedPledgeModal>
+}
+
+@if(_singleHabitDialogModalOpen)
+{
+    <HabitDialogModal SelectedHabit="_selectedHabit" OnClose="@OnDialogClose" DisplayType="_modalType" Theme="@_userTheme"></HabitDialogModal>
+}
+
+@if(_multipleHabitDialogModalOpen)
+{
+    <HabitsDialogModal SelectedHabits="_selectedHabits" OnClose="@OnDialogClose" DisplayType="_modalType" Theme="@_userTheme"></HabitsDialogModal>
+}

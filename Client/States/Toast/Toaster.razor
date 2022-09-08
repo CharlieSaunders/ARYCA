@@ -1,0 +1,34 @@
+﻿@implements IDisposable
+@if (toasterService.HasToasts)
+{
+    <div class="">
+        <div class="toast-container position-absolute top-0 end-0 mt-1 pt-1 pe-1">
+
+            @foreach (var toast in toasterService.GetToasts())
+            {
+                var toastCss = ToastStyle(toast);
+                <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header @toastCss">
+                        @if (toast.IsAchievement)
+                        {
+                            <strong class="me-auto">Achievement: @toast.Title</strong>
+                        }
+                        else
+                        {
+                            <strong class="me-auto">@toast.Title</strong>
+                        }
+                        <button type="button" class="btn-close btn-close-white" aria-label="Close" @onclick="() => ClearToast(toast)"></button>
+                    </div>
+                    <div class="toast-body">
+                        <p>@toast.Message</p>
+                        @if (toast.IsAchievement)
+                        {
+                            <img src="/assets/achievements/@toast.ImageUrl" alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm mx-auto d-block">
+                        }
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+}

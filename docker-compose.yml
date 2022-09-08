@@ -1,0 +1,34 @@
+services:
+ api:
+  container_name: api-container
+  environment:
+   - ASPNETCORE_URLS=http://192.168.10.6:9999
+  build:
+   context: ./
+   dockerfile: ./Services/Dockerfile
+  ports: 
+   - 9999:9999
+  networks:
+   aryca:
+    ipv4_address: 192.168.10.6
+
+ client:
+  container_name: client-container
+  environment:
+   - ASPNETCORE_URLS=http://192.168.10.5:9998
+  build:
+   context: ./
+   dockerfile: ./Client/Dockerfile
+  ports:
+   - 9998:9998
+  networks:
+   aryca:
+    ipv4_address: 192.168.10.5
+
+networks:
+  aryca:
+    ipam:
+      driver: default
+      config:
+        - subnet: "192.168.10.0/24"
+        - subnet: "2001:3984:3989::/64"

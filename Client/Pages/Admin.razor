@@ -1,0 +1,193 @@
+﻿@page "/Admin"
+@using Client.Components
+@using Client.Components.Account
+@using Client.Components.Admin
+@using Client.Components.Habits
+@using Client.Components.Market
+@using Client.States.Toast
+@using Common.Classes.Users
+@using Common.DTO.Configs
+@using Common.DTO.Habits
+@using Common.DTO.Unlockables
+@using Common.DTO.Users
+@using Common.Entities.Configuration
+@using Common.Entities.Habits
+@using Common.Entities.Unlockables
+@using Common.Entities.Users
+@using Common.HttpClients;
+@using Client.ServicesBridge;
+@using Client.States;
+@inject NavigationManager _navigationManager
+@inject GenericHttpClient _genericHttpClient;
+@inject AuthenticationStateProvider _authStateProvider;
+@inject UserState _userState;
+@inject ToasterService _toasterService;
+@inject ILocalStorageService _localStorage;
+
+<AuthorizeView>
+    <NotAuthorized>
+    @if (true) { _navigationManager.NavigateTo("Login"); }
+    </NotAuthorized>
+
+    <Authorized>
+    <div class="page-wrapper">
+        <div class="row">
+            @* App Config *@
+            <div class="col-md-3">
+                <h4 class="@_userTheme-card">Application Config</h4>
+                @if(_appConfig is null)
+                {
+                    <h4 style="text-align: center;">No configuration yet &#128077;</h4>
+                }
+                else
+                {
+                    <div class="card @_userTheme-card">
+                        <div class="card-body @_userTheme-card-body">
+                            <EditForm Model="@_appConfig" Context="AppConfigEditForm">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+                            <div class="form-group">
+                                <label class="col-md-4">App Name</label>
+                                <InputText class="col-md-7" @bind-Value="_appConfig.ApplicationName" /> 
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <label class="col-md-4">Memorable Date</label>
+                                <InputDate  class="col-md-7" @bind-Value="_appConfig.MemorableDate" />
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <label class="col-md-4">Index Text</label>
+                                <InputText class="col-md-7" @bind-Value="_appConfig.ImageText" /> 
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <label class="col-md-4">House Balance</label>
+                                <InputNumber class="col-md-7" @bind-Value="_appConfig.Balance" /> 
+                            </div>
+                            <br />
+                            </EditForm>
+                            <div class="logo-pic">
+                                <img src='assets/backgrounds/@_appConfig.LoginImageUrl' class="img-responsive img-rounded" style="height: 75px; width: 75px">
+                            </div>
+                            <button type="button" class="btn btn-primary @_userTheme-btn-primary" style="float:right"  @onclick="(() => OpenBackgroundImageDialogModal())">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <button class="btn btn-primary  @_userTheme-btn-primary" style="float: right;" @onclick="(() => UpdateAppConfig())">
+                            <span class="oi oi-plus" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                }
+            </div>
+
+            @* Habits *@
+            <div class="col-md-3">
+                <h4 class="@_userTheme-card">Habits</h4>
+                @if(_allHabitsPaginated is null || _allHabitsPaginated.Count() == 0)
+                {
+                    <h4 style="text-align: center;">No habits yet &#128077;</h4>
+                }
+                else
+                {
+                 <table class="table @_userTheme-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach(var habit in _allHabitsPaginated)
+                    {
+
+                        <tr class="@_userTheme-table-tr">
+                            <td>@habit.Name</td>
+                            <td>
+                                <button class="btn btn-primary @_userTheme-btn-primary" style="float: right;" @onclick="(() => OpenHabitModal(habit, ModalType.Update))">
+                                    <span class="oi oi-pencil" aria-hidden="true"></span>
+                                </button>
+                                <button class="btn btn-danger @_userTheme-btn-danger" style="float: right; margin-right: 5px;" @onclick="(() => DeleteHabit(habit))">
+                                    <span class="oi oi-trash" aria-hidden="true"></span>
+                                </button>
+                            </td>
+                         </tr>
+                    }
+                    </tbody>
+                </table>
+                }
+                 @if(HABITS_PAGE >= 1)
+                {
+                    <button class="btn btn-secondary @_userTheme-btn-secondary" style="float: left" @onclick="(() => ChangeHabitPage(-1))"><span class="oi oi-minus" aria-hidden="true"></span></button>
+                }
+                @if (HABITS_PAGE < HABITS_MAX_PAGE)
+                {
+                    <button class="btn btn-secondary @_userTheme-btn-secondary" style="float: right" @onclick="(() => ChangeHabitPage(1))"><span class="oi oi-plus" aria-hidden="true"></span></button>
+                }   
+            </div>
+
+            @* Marketplace *@
+            <div class="col-md-3">
+                <h4 class="@_userTheme-card">Marketplace</h4>
+                @if(_marketplaceItemsPaginated is null || _marketplaceItemsPaginated.Count() == 0)
+                {
+                    <h4 style="text-align: center;">No items yet &#128077;</h4>
+                }
+                else
+                {
+                 <table class="table @_userTheme-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach(var item in _marketplaceItemsPaginated)
+                    {
+
+                        <tr class="@_userTheme-table-tr">
+                            <td>@item.Name</td>
+                            <td>
+                                <button class="btn btn-primary  @_userTheme-btn-primary" style="float: right;" @onclick="(() => OpenMarketPlaceModal(item, ModalType.Update))">
+                                    <span class="oi oi-pencil" aria-hidden="true"></span>
+                                </button>
+                                <button class="btn btn-danger  @_userTheme-btn-danger" style="float: right; margin-right: 5px;" @onclick="(() => DeleteMarketplaceItem(item))">
+                                    <span class="oi oi-trash" aria-hidden="true"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+                }
+                @if(MARKET_PAGE >= 1)
+                {
+                    <button class="btn btn-secondary @_userTheme-btn-secondary" style="float: left" @onclick="(() => ChangeMarketPlacePage(-1))"><span class="oi oi-minus" aria-hidden="true"></span></button>
+                }
+                @if (MARKET_PAGE < MARKET_MAX_PAGE)
+                {
+                    <button class="btn btn-secondary @_userTheme-btn-secondary" style="float: right" @onclick="(() => ChangeMarketPlacePage(1))"><span class="oi oi-plus" aria-hidden="true"></span></button>
+                }   
+            </div>
+
+            <Footer ShouldDisplay="false"></Footer>
+        </div>
+    </div>
+    </Authorized>
+</AuthorizeView>
+
+@if(_editHabitDialogModal)
+{
+    <HabitDialogModal SelectedHabit="_selectedHabit" OnClose="@OnHabitDialogClose" DisplayType="_modalType" Theme="@_userTheme"></HabitDialogModal>
+}
+
+@if(_editMarketplaceDialogModal)
+{
+    <UpdateMarketplaceItem SelectedItem="_selectedItem" OnClose="@OnMarketplaceDialogClose" DisplayType="_modalType" Theme="@_userTheme"></UpdateMarketplaceItem>
+}
+
+@if(_editBackgroundImageDialogModal)
+{
+    <SelectLoginImageModal Current="_appConfig.LoginImageUrl" OnClose="@OnBackgroundImageDialogClose" Theme="@_userTheme"></SelectLoginImageModal>
+}

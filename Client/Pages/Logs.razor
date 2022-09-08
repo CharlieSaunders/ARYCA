@@ -1,0 +1,82 @@
+﻿@page "/Logs"
+@using Client.Components
+@using Client.Components.Logs
+@using Client.ServicesBridge
+@using Client.States
+@using Client.States.Toast
+@using Common.Entities.Logs
+@using Common.HttpClients
+@inject NavigationManager _navigationManager
+@inject GenericHttpClient _genericHttpClient;
+@inject AuthenticationStateProvider _authStateProvider;
+@inject UserState _userState;
+@inject ToasterService _toasterService;
+@inject ILocalStorageService _localStorage;
+
+<AuthorizeView>
+    <NotAuthorized>
+    @if (true) { _navigationManager.NavigateTo("Login"); }
+    </NotAuthorized>
+
+    <Authorized>
+    <div class="page-wrapper">
+        <div class="row">
+            <div class="col-md-7">
+                <h4 class="@_userTheme-card">All Logs</h4>
+                @if (!_logsLoaded)
+                    {
+                        <div class="text-center">
+                          <div class="spinner-border" role="status">
+                          </div>
+                        </div>
+                    }
+                    else
+                    {
+                        @if(_allLogs is null || _allLogs.Count() == 0)
+                        {
+                            <h4 style="text-align: center;">No logs yet &#128077;</h4>
+                        }
+                        else
+                        {
+                         <table class="table @_userTheme-table">
+                            <thead>
+                                <tr>
+                                    <th>Area</th>
+                                    <th>Name</th>
+                                    <th>Severity</th>
+                                    <th>Last Seen</th>
+                                    <th>Occurances</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach(var log in _allLogs)
+                            {
+
+                                <tr class="@_userTheme-table-tr">
+                                    <td>@log.Area</td>
+                                    <td>@log.Name</td>
+                                    <td>@log.Severity</td>
+                                    <td>@log.LastSeen</td>
+                                    <td>@log.Occurances</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary @_userTheme-btn-primary" @onclick="(() => OpenDialogModal(log, ModalType.Select))">
+                                            <span class="oi oi-plus" aria-hidden="true"></span>
+                                        </button>
+                                    </td>
+                                 </tr>
+                            }
+                            </tbody>
+                        </table>
+                        }
+                    }
+            </div>
+        </div>
+    </div>
+    </Authorized>
+</AuthorizeView>
+
+@if(_logModalDialogOpen)
+{
+    <LogDialogModal SelectedLog="_selectedLog" OnClose="@OnDialogClose" DisplayType="_modalType" Theme="@_userTheme"></LogDialogModal>
+}

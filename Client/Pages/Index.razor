@@ -1,0 +1,151 @@
+﻿@page "/Home"
+@using Client.Components
+@using Common.Classes.Users
+@using Common.Entities.Configuration
+@using Common.Entities.Users
+@using Common.HttpClients
+@using Client.ServicesBridge;
+@using Client.States;
+@using Client.States.Toast;
+@inject GenericHttpClient _genericHttpClient;
+@inject NavigationManager _navigationManager;
+@inject UserState _userState;
+@inject ToasterService _toasterService;
+@inject ILocalStorageService _localStorage;
+
+<AuthorizeView>
+    <NotAuthorized>
+    @if (true) { _navigationManager.NavigateTo("Login"); }
+    </NotAuthorized>
+
+    <Authorized>
+    <div class="page-overflow">
+        <div id="parallax-index-page">
+            <section>
+                <div class="title">
+                     @if (!_usersLoaded)
+                     {
+                         <h3>Loading...</h3>
+                     }
+                     else
+                     {
+                        <h3 class="appName">@_appConfig.ApplicationName</h3>
+                        <h1 class="memorableDate">@_relationshipTime[0] <span class="bigDaysText">days,</span> @_relationshipTime[1] <span class="bigHoursText">hours</span></h1>
+                     }
+                </div>
+            </section>
+
+            <section>
+                  @if (!_usersLoaded)
+                  {
+                    <div class="parallax-one">
+                        <h2>Loading...</h2>
+                    </div>
+                  }
+                  else
+                  {
+                    <div class="parallax-one">
+                        <h2 class="imageText">@_appConfig.ImageText</h2>
+                    </div>
+                  }
+            </section>
+
+            <section>
+                    <div class="block" style="background-color: #444; width: auto!important;">
+                   <div class="row px-3 text-center" style="justify-content: center; ">
+                    @if (!_usersLoaded)
+                   {
+                         <div class="text-center">
+                          <div class="spinner-border" role="status">
+                          </div>
+                        </div>
+                   }
+                   else
+                   {
+                      @if (_users is null || _users.Count() == 0)
+                       {
+                           <h3>How are you seeing this... </h3>
+                       }
+                       else
+                       {
+                            @foreach (var user in _users)
+                           {
+                                <div class="col-md-2 m-2 @user.Theme-card indexCards" style="font-family: @user.FontFamily">
+                                    <div class="col-xl-12 @user.Theme-card" >
+                                        <div class="rounded py-5 @user.Theme-card-body" onclick="Particles(event, this)" data-type="@user.ParticleEffect" id="@user.Reference">
+                                            <img src="/assets/userSvgs/@user.AvatarUrl" alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
+                                            <h5 class="mb-0">@user.Title @user.FirstName</h5>
+                                            <ul class="social mb-0 list-inline mt-3">
+                                                <li class="list-inline-item">
+                                                    <Tooltip Text="<b>Balance</b>">
+                                                        💎 @user.Balance.ToString().Split(".")[0] 
+                                                    </Tooltip>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <Tooltip Text="<b>Habits</b>">
+                                                        🔄 @user.Habits
+                                                    </Tooltip>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <Tooltip Text="<b>Pledges</b>">
+                                                        🎯 @user.Pledges
+                                                    </Tooltip>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <Tooltip Text="<b>Stocks</b>">
+                                                        💹 @user.Stocks
+                                                    </Tooltip>
+                                                   
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                             }
+                       }
+                   }
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="parallax-two">
+              </div>
+            </section>
+
+            <section>
+              <div class="block" style="background-color: #444; color: #f2f2f2">
+                <p>
+                    <span class="first-character" style="color: #222">I</span>n order to build good habits there should be a reward of some description, something that makes you want to do it again and again. 
+                    The key concept behind the currency is to the use it for pledges. You've stuck to your habit so why not treat yourself and ask for a massage or shopping spree. Alternatively there is a
+                    Marketplace which offers customisation from the theme to different avatars.
+                </p>
+                <p>💎 This is the currency. Earnable through habits, by completing pledges or being smart with investing.</p>
+                <p>🔄 These are habits. These are daily markers of something you want to have achieved. They should be measurable and specific.</p>
+                <p>🎯 Mark pledges. Theses are 1 time only events that one party agrees to complete for the other. They expire after completion.</p>
+                <p>💹 Represent stocks owned. These can be used wisely to increase your account balance.</p>
+                <p>🏅 User badges. Earnt by completing certain tasks or by doing something worthy.</p>
+              </div>
+            </section>
+
+            <section>
+              <div class="parallax-three">
+              </div>
+            </section>
+
+            <section>
+              <div class="block" style="background-color: #444; color: #f2f2f2">
+                <p>
+                    <span class="first-character"  style="color: #222">T</span>he app should always be striving to be the best it can. With that in mind there are certain things that will be implemented:
+                </p>
+                        <br /><br />
+                <p>💖 Profile love. Give a sweet little love heart to the other person.</p>
+                <p>💹 Stock gifting. Feeling frivolous? Gift another person a share in a stock. Belfort, eat your heart out</p>
+              </div>
+            </section>
+            
+            <Footer ShouldDisplay="true"></Footer>
+        </div>
+    </div>
+    </Authorized>
+</AuthorizeView>

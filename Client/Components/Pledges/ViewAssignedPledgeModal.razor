@@ -1,0 +1,56 @@
+﻿@using Common.DTO.Pledges
+@using Common.Entities.Pledges;
+@using static Common.DTO.Pledges.PledgeStatuses
+@using static Common.DTO.Pledges.AssignedPledgeResponse
+
+<div class="modal fade show @Theme-modal" id="myModal" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+    <div class="modal-dialog @Theme-modal-dialog">
+        <div class="modal-content @Theme-modal-content">
+            <div class="modal-header @Theme-modal-header">
+                <h4 class="modal-title" style="float: left;">@SelectedPledge.Name</h4>
+                <h4 class="modal-title" style="float: right;">💎@SelectedPledge.Value</h4>
+                <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick="@ModalCancel">&times;</button>
+            </div>
+            <div class="modal-body @Theme-modal-body">
+                @if (@SelectedPledge.Status == PledgeStatus.AwaitingSignOff)
+               {
+                     <p> 
+                     @SelectedPledge.Assignee.FirstName has completed the pledge to a @SelectedPledge.Name. <br /><br />
+                     This was also asked with the following: "@SelectedPledge.Details." <br /><br />
+                     As always this was completed with  💖
+                 </p>
+               }
+               else
+                {
+                 <p> 
+                     @SelectedPledge.Assigner.FirstName has asked you to pledge to a @SelectedPledge.Name. <br /><br />
+                     They have also said: "@SelectedPledge.Details." <br /><br />
+                     As always this is asked with  💖
+                 </p>
+                }
+
+            </div>
+            <div class="modal-footer @Theme-modal-footer">
+                @switch(@SelectedPledge.Status)
+                {
+                    case PledgeStatus.AwaitingAcceptance:
+                        <button type="button" class="btn btn-success @Theme-btn-success" @onclick=@ModalAccept>Accept</button>
+                        <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick=@ModalDecline>Decline</button>
+                        <button type="button" class="btn btn-warning @Theme-btn-warning" @onclick=@ModalCancel>Cancel</button>
+                    break;
+
+                    case PledgeStatus.AwaitingCompletion:
+                        <button type="button" class="btn btn-success @Theme-btn-success" @onclick=@ModalComplete>Complete</button>
+                        <button type="button" class="btn btn-warning @Theme-btn-warning" @onclick=@ModalCancel>Cancel</button>
+                    break;
+
+                    case PledgeStatus.AwaitingSignOff:
+                        <button type="button" class="btn btn-success @Theme-btn-success" @onclick=@ModalSignOff>Sign off</button>
+                        <button type="button" class="btn btn-danger @Theme-btn-danger" @onclick=@ModalRejectSignOff>Decline</button>
+                        <button type="button" class="btn btn-warning @Theme-btn-warning" @onclick=@ModalCancel>Cancel</button>
+                    break;
+                }
+            </div>
+        </div>
+    </div>
+</div>
