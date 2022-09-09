@@ -15,7 +15,7 @@ namespace Client.States.Achievements
 		public AchievementState(ToasterService toasterService)
 		{
 			_toasterService = toasterService;
-			_achievementBridge = new AchievementsBridge(new GenericHttpClient("http://api-container:9999"), toasterService);
+			_achievementBridge = new AchievementsBridge(new GenericHttpClient(), toasterService);
 		}
 
 		public async Task Unlock(string type, string jwt)

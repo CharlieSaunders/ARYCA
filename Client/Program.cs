@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor().AddCircuitOptions(x => x.DetailedErrors = true);
 
-builder.Services.AddScoped(serviceProvider => new GenericHttpClient("http://api-container:9999"));
+builder.Services.AddScoped(serviceProvider => new GenericHttpClient());
 builder.Services.AddScoped(serviceProvider => new BinanceHttpClient());
 builder.Services.AddScoped(serviceProvider => new ToasterService());
 builder.Services.AddScoped<UserState>();

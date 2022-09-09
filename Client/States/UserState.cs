@@ -14,8 +14,13 @@ namespace Client.States
 
 		public UserState()
 		{
-			_userBridge = new FlatUsersBridge(new GenericHttpClient("http://api-container:9999"));
+			_userBridge = new FlatUsersBridge(new GenericHttpClient());
 			AppUser = new UserResponse();
+		}
+
+		public async Task UpdateUser(string jwToken)
+		{
+			SetUser(await _userBridge.GetUserByReference(AppUser.UserReference, jwToken));
 		}
 
 		public void SetUser(User user) => AppUser = new UserResponse(user);
@@ -23,8 +28,6 @@ namespace Client.States
 		public void SetUser(UserResponse user) => AppUser = user;
 
 		public void Logout() => AppUser = new UserResponse();
-
-		public async Task UpdateUser(string jwToken) => SetUser(await _userBridge.GetUserByReference(AppUser.UserReference, jwToken));
 
 		public Guid GetUserReference() => AppUser.UserReference;
 
@@ -54,12 +57,6 @@ namespace Client.States
 
 		public bool IsAdmin() => AppUser.Role == UserRole.Admin;
 
-		public string GetAvatarUrl()
-		{
-			if (!AppUser.IsValidUser())
-				return "favicon.png";
-			else
-				return AppUser.AvatarUrl;
-		}
+		public string GetAvatarUrl() => AppUser.AvatarUrl;
 	}
 }

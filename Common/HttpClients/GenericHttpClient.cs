@@ -1,4 +1,5 @@
 ﻿using Common.Classes;
+using Common.Config;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
@@ -9,12 +10,13 @@ namespace Common.HttpClients
 	{
 		private readonly HttpClient _httpClient;
 		private readonly string _url;
-		public GenericHttpClient(string baseAddress)
+		public GenericHttpClient()
 		{
-			_url = baseAddress;
+			var servicesApiUrl = GlobalConfigFactory.For().GetApiUrl();
+			_url = servicesApiUrl;
 			_httpClient = new HttpClient
 			{
-				BaseAddress = new Uri(baseAddress)
+				BaseAddress = new Uri(servicesApiUrl)
 			};
 		}
 
