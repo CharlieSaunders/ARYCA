@@ -14,5 +14,4 @@
 	{
 		Primary, Secondary, Dark, Light, Success, Danger, Warning, Info
 	}
-
 }

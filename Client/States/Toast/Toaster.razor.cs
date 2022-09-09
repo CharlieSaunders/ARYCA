@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Client.States.Toast
 {
+#pragma warning disable S3881 // "IDisposable" should be implemented correctly
 	public partial class Toaster : ComponentBase, IDisposable
 	{
 		[Inject] private ToasterService? _toasterService { get; set; }
@@ -23,9 +24,9 @@ namespace Client.States.Toast
 
 		public void Dispose()
 		{
-			GC.SuppressFinalize(this);
 			toasterService.ToasterChanged -= ToastChanged;
 			toasterService.ToasterTimerElapsed -= ToastChanged;
+			GC.SuppressFinalize(this);
 		}
 
 		private static string ToastStyle(ToastableObject toast)
@@ -38,6 +39,7 @@ namespace Client.States.Toast
 			};
 		}
 	}
+#pragma warning restore S3881
 }
 
 

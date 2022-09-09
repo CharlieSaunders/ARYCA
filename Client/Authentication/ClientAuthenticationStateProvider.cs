@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using Client.Helpers;
 using Client.States;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
@@ -16,9 +17,7 @@ namespace Client.Authentication
 		}
 		public override async Task<AuthenticationState> GetAuthenticationStateAsync()
 		{
-			var authToken = await _localStorage.ContainKeyAsync("AuthenticationToken")
-				? await _localStorage.GetItemAsStringAsync("AuthenticationToken")
-				: string.Empty;
+			var authToken = await LocalStorageHelper.GetAuthToken(_localStorage);
 
 			var userReference = _userState.IsValidUser()
 				? _userState.GetUserReference()
@@ -30,7 +29,7 @@ namespace Client.Authentication
 			{
 				var identity = new ClaimsIdentity(new[]
 				{
-					new Claim(ClaimTypes.Name, authToken.Replace("\"", ""))
+					new Claim(ClaimTypes.Name, authToken)
 				}, "AuthenticationTokenClaim");
 
 				currentState = new AuthenticationState(new ClaimsPrincipal(identity));

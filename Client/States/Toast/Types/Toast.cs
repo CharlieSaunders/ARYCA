@@ -2,19 +2,18 @@
 {
 	public record SimpleToast : ToastableObject
 	{
-		private Guid Id = Guid.NewGuid();
-		private TimeSpan elapsedTime => Posted - DateTimeOffset.Now;
+		private TimeSpan ElapsedTime => Posted - DateTimeOffset.Now;
 
 		public readonly DateTimeOffset Posted = DateTimeOffset.Now;
-		public DateTimeOffset TimeToBurn { get; init; } = DateTimeOffset.Now.AddSeconds(30);
+		public DateTimeOffset TimeToBurn { get; init; } = DateTimeOffset.Now.AddSeconds(5);
 
 		public string ElapsedTimeText =>
-			elapsedTime.Seconds > 60
-			? $"posted {-elapsedTime.Minutes} mins ago"
-			: $"posted {-elapsedTime.Seconds} secs ago";
+			ElapsedTime.Seconds > 60
+			? $"posted {-ElapsedTime.Minutes} mins ago"
+			: $"posted {-ElapsedTime.Seconds} secs ago";
 
 		public static SimpleToast NewToast(string title, string message, MessageColour messageColour, int secsToLive)
-			=> new SimpleToast
+			=> new()
 			{
 				Title = title,
 				Message = message,

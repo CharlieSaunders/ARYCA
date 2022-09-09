@@ -60,12 +60,12 @@ namespace Services.Helpers
 			if (!UsersMatch(usersList))
 				throw new Exception(Error.Users.UsersFoundDoNotMatch);
 
-			if(!usersList.First().HasActiveSession)
+			if (!usersList.First().HasActiveSession)
 				throw new Exception(Error.Users.NoActiveSession);
 
 			return usersList.First();
 		}
-				
+
 		public User UserFrom(string username)
 		{
 			try

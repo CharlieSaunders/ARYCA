@@ -4,11 +4,8 @@ namespace Client.States.Toast.Types
 {
 	public record AchievementToast : ToastableObject
 	{
-		private Guid Id = Guid.NewGuid();
-		private TimeSpan elapsedTime => Posted - DateTimeOffset.Now;
-
 		public readonly DateTimeOffset Posted = DateTimeOffset.Now;
-		public DateTimeOffset TimeToBurn { get; init; } = DateTimeOffset.Now.AddSeconds(30);
+		public DateTimeOffset TimeToBurn { get; init; } = DateTimeOffset.Now.AddSeconds(5);
 
 		public static AchievementToast NewToast(Achievement type, int secsToLive)
 		{

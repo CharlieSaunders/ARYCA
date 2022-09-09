@@ -1,5 +1,6 @@
 ﻿using Client.States.Toast.Types;
 using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace Client.States.Toast
 {
@@ -7,8 +8,8 @@ namespace Client.States.Toast
 	public class ToasterService : IDisposable
 
 	{
-		private readonly List<ToastableObject> _toastList = new List<ToastableObject>();
-		private readonly System.Timers.Timer _timer = new System.Timers.Timer();
+		private readonly List<ToastableObject> _toastList = new();
+		private readonly Timer _timer = new();
 		public event EventHandler? ToasterChanged;
 		public event EventHandler? ToasterTimerElapsed;
 		public bool HasToasts => _toastList.Count > 0;
@@ -17,7 +18,7 @@ namespace Client.States.Toast
 		{
 			_timer.Interval = 5000;
 			_timer.AutoReset = true;
-			_timer.Elapsed += this.TimerElapsed;
+			_timer.Elapsed += TimerElapsed;
 			_timer.Start();
 		}
 
@@ -29,16 +30,15 @@ namespace Client.States.Toast
 
 		private void TimerElapsed(object? sender, ElapsedEventArgs e)
 		{
-			this.ClearBurntToast();
-			this.ToasterTimerElapsed?.Invoke(this, EventArgs.Empty);
+			ClearBurntToast();
+			ToasterTimerElapsed?.Invoke(this, EventArgs.Empty);
 		}
 
 		public void AddToast(ToastableObject toast)
 		{
 			_toastList.Add(toast);
-			// only raise the ToasterChanged event if it hasn't already been raised by ClearBurntToast
-			if (!this.ClearBurntToast())
-				this.ToasterChanged?.Invoke(this, EventArgs.Empty);
+			if (!ClearBurntToast())
+				ToasterChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		public void ClearToast(ToastableObject toast)
@@ -46,9 +46,8 @@ namespace Client.States.Toast
 			if (_toastList.Contains(toast))
 			{
 				_toastList.Remove(toast);
-				// only raise the ToasterChanged event if it hasn't already been raised by ClearBurntToast
-				if (!this.ClearBurntToast())
-					this.ToasterChanged?.Invoke(this, EventArgs.Empty);
+				if (!ClearBurntToast())
+					ToasterChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
@@ -58,7 +57,7 @@ namespace Client.States.Toast
 			if (toastsToDelete is not null && toastsToDelete.Count > 0)
 			{
 				toastsToDelete.ForEach(toast => _toastList.Remove(toast));
-				this.ToasterChanged?.Invoke(this, EventArgs.Empty);
+				ToasterChanged?.Invoke(this, EventArgs.Empty);
 				return true;
 			}
 			return false;
@@ -68,9 +67,11 @@ namespace Client.States.Toast
 		{
 			if (_timer is not null)
 			{
-				_timer.Elapsed += this.TimerElapsed;
+				_timer.Elapsed += TimerElapsed;
 				_timer.Stop();
 			}
+
+			GC.SuppressFinalize(this);
 		}
 #pragma warning restore S3881
 	}
