@@ -19,11 +19,9 @@ builder.Services.AddCors(options =>
 		});
 });
 
-Console.WriteLine(builder.Environment.ToString());
-
 builder.Services.AddDbContext<DataContext>(options =>
 {
-	options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+	options.UseSqlite(builder.Configuration.GetConnectionString("SqLite"));
 	options.UseSqlite(b => b.MigrationsAssembly("Services"));
 });
 
@@ -33,11 +31,8 @@ var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseRouting();
 app.UseCors(arycaCorsOrigin);
-//app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(origin => true));
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.UseEndpoints(endpoints =>
 {
 	endpoints.MapControllers();

@@ -23,13 +23,6 @@ namespace Services.Controllers
 			_logsService = new LogsService(db);
 		}
 
-		[AllowAnonymous]
-		[HttpGet("Health")]
-		public ActionResult<IServicesResponse> HealthCheck()
-		{
-			return AnonymousServicesResponseHandler.From(new IServicesResponse("Healthy"));
-		}
-
 		[HttpGet("Application")]
 		[Authorize]
 		public ActionResult<IServicesResponse> GetAppConfig()
