@@ -43,7 +43,7 @@ namespace Common.HttpClients
 		{
 			var byteContent = HttpClientRequestBuilder.Request(request);
 			var apiResponse = await _httpClient.PostAsync(url, byteContent);
-			return HttpClientResponseHandler.From(apiResponse);
+			return await HttpClientResponseHandler.From(apiResponse);
 		}
 
 		public async Task<IServicesResponse> GetAsyncConvertResult(string url, string jwToken)
