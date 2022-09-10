@@ -26,7 +26,7 @@ namespace Client.ServicesBridge
 			var user = new User();
 			try
 			{
-				var apiResponse = await _genericHttpClient.PostAsyncConvertResult($"{_usersApiUrl}/Session/{username}", "{ }");
+				var apiResponse = await _genericHttpClient.PostAsyncAnonymous($"{_usersApiUrl}/Session/{username}", "{ }");
 
 				if (apiResponse is not null && !apiResponse.HasError)
 					user = JsonConvert.DeserializeObject<User>(apiResponse.Results.ToString());
