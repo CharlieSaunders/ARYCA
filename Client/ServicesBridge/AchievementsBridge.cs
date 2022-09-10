@@ -26,7 +26,7 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_achievementUrl}/User", false, jwToken)).Result;
+				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_achievementUrl}/User", jwToken)).Result;
 
 				if (apiResponse is not null && !apiResponse.HasError)
 					userAchievements = JsonConvert.DeserializeObject<List<UserAchievementResponse>>(apiResponse.Results.ToString());
@@ -47,7 +47,7 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_achievementUrl}", false, jwToken)).Result;
+				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_achievementUrl}", jwToken)).Result;
 
 				if (apiResponse is not null && !apiResponse.HasError)
 					achievements = JsonConvert.DeserializeObject<List<Achievement>>(apiResponse.Results.ToString());
@@ -66,7 +66,7 @@ namespace Client.ServicesBridge
 		{
 			try
 			{
-				await Task.FromResult(_genericHttpClient.PutAsync($"{_achievementUrl}/User/{achievementId}", "{}", false, jwToken)).Result;
+				await Task.FromResult(_genericHttpClient.PutAsync($"{_achievementUrl}/User/{achievementId}", "{}", jwToken)).Result;
 			}
 			catch
 			{

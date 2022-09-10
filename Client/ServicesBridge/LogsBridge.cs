@@ -24,7 +24,7 @@ namespace Client.ServicesBridge
 			var logs = new List<Log>();
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult(_apiUrl, false, jwToken)).Result;
+				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult(_apiUrl, jwToken)).Result;
 
 				if (apiResponse is not null)
 					logs = JsonConvert.DeserializeObject<List<Log>>(apiResponse.Results.ToString());
@@ -43,7 +43,7 @@ namespace Client.ServicesBridge
 			var deleted = false;
 			try
 			{
-				deleted = await Task.FromResult(_genericHttpClient.DeleteAsyncInUrl($"{_apiUrl}/{logId}", false, jwToken)).Result;
+				deleted = await Task.FromResult(_genericHttpClient.DeleteAsyncInUrl($"{_apiUrl}/{logId}", jwToken)).Result;
 			}
 			catch
 			{

@@ -1,6 +1,7 @@
 ﻿using Common.Classes;
 using Common.Config;
 using Newtonsoft.Json;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -9,64 +10,66 @@ namespace Common.HttpClients
 	public class GenericHttpClient
 	{
 		private readonly HttpClient _httpClient;
-		private readonly string _url;
 		public GenericHttpClient()
 		{
 			var servicesApiUrl = GlobalConfigFactory.For().GetApiUrl();
-			_url = servicesApiUrl;
 			_httpClient = new HttpClient
 			{
 				BaseAddress = new Uri(servicesApiUrl)
 			};
 		}
 
-		public string GetUrl() => _url;
-
-		public async Task<string> GetAsStringAsync(string extendedUrl, bool configureAwait)
+		public async Task<string> GetAsStringAsync(string url)
 		{
-			var apiResponse = await _httpClient.GetAsync(extendedUrl).ConfigureAwait(configureAwait);
-			return await apiResponse.Content.ReadAsStringAsync().ConfigureAwait(configureAwait);
+			return await _httpClient.GetStringAsync(url);
 		}
 
-		public async Task<bool> DeleteAsyncInUrl(string extendedUrl, bool configureAwait, string jwToken)
+		public async Task<bool> DeleteAsyncInUrl(string url, string jwToken)
 		{
-			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwToken);
-			var apiResponse = await _httpClient.DeleteAsync(extendedUrl).ConfigureAwait(configureAwait);
+			HttpClientRequestBuilder.AddJwtHeader(_httpClient, jwToken);
+			var response = await _httpClient.DeleteAsync(url);
+			return response.IsSuccessStatusCode;
+		}
+
+		public async Task<bool> PostAsync(string url, dynamic request, string jwToken)
+		{
+			HttpClientRequestBuilder.AddJwtHeader(_httpClient, jwToken);
+			var byteContent = HttpClientRequestBuilder.Request(request);
+			var apiResponse = await _httpClient.PostAsync(url, byteContent);
 			return apiResponse.IsSuccessStatusCode;
 		}
 
-		public async Task<bool> PostAsync(string extendedUrl, dynamic request, bool configureAwait, string jwToken)
+		public async Task<string> PostAsyncReturnString(string url, dynamic request)
 		{
-			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwToken);
-			var requestObject = JsonConvert.SerializeObject(request);
-			var buffer = Encoding.UTF8.GetBytes(requestObject);
-			var byteContent = new ByteArrayContent(buffer);
-			byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-			var apiResponse = await _httpClient.PostAsync(extendedUrl, byteContent).ConfigureAwait(configureAwait);
-			return apiResponse.IsSuccessStatusCode;
+			var byteContent = HttpClientRequestBuilder.Request(request);
+			var apiResponse = await _httpClient.PostAsync(url, byteContent);
+			return await apiResponse.Content.ReadAsStringAsync();
 		}
 
-		public async Task<string> PostAsyncReturnString(string extendedUrl, dynamic request, bool configureAwait)
-		{
-			var requestObject = JsonConvert.SerializeObject(request);
-			var buffer = Encoding.UTF8.GetBytes(requestObject);
-			var byteContent = new ByteArrayContent(buffer);
-			byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-			var apiResponse = await _httpClient.PostAsync(extendedUrl, byteContent).ConfigureAwait(configureAwait);
-			return await apiResponse.Content.ReadAsStringAsync().ConfigureAwait(configureAwait);
-		}
-		public async Task<IServicesResponse> PostAsyncConvertResult(string extendedUrl, dynamic request, bool configureAwait)
+		public async Task<IServicesResponse> PostAsyncConvertResult(string url, dynamic request)
 		{
 			var response = new IServicesResponse();
 
-			var requestObject = JsonConvert.SerializeObject(request);
-			var buffer = Encoding.UTF8.GetBytes(requestObject);
-			var byteContent = new ByteArrayContent(buffer);
-			byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+			var byteContent = HttpClientRequestBuilder.Request(request);
+			var apiResponse = await _httpClient.PostAsync(url, byteContent);
+			var apiContent = await apiResponse.Content.ReadAsStringAsync();
 
-			var apiResponse = await _httpClient.PostAsync(extendedUrl, byteContent).ConfigureAwait(configureAwait);
+			var deserialized = JsonConvert.DeserializeObject<IServicesResponse>(apiContent);
+			if (deserialized is not null)
+				response = deserialized;
+			else
+				response.AddError("Error in response", "Response returned was null");
+
+			return response;
+		}
+
+		public async Task<IServicesResponse> GetAsyncConvertResult(string url, string jwToken)
+		{
+			var response = new IServicesResponse();
+
+			HttpClientRequestBuilder.AddJwtHeader(_httpClient, jwToken);
+
+			var apiResponse = await _httpClient.GetAsync(url);
 			var apiContent = await apiResponse.Content.ReadAsStringAsync();
 
 			var deserialized = JsonConvert.DeserializeObject<IServicesResponse>(apiContent);
@@ -76,30 +79,11 @@ namespace Common.HttpClients
 			return response;
 		}
 
-		public async Task<IServicesResponse> GetAsyncConvertResult(string extendedUrl, bool configureAwait, string jwtToken)
+		public async Task<bool> PutAsync(string url, dynamic request, string jwToken)
 		{
-			var response = new IServicesResponse();
-
-			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
-			var apiResponse = await _httpClient.GetAsync(extendedUrl).ConfigureAwait(configureAwait);
-			var apiContent = await apiResponse.Content.ReadAsStringAsync().ConfigureAwait(configureAwait);
-
-			var deserialized = JsonConvert.DeserializeObject<IServicesResponse>(apiContent);
-			if (deserialized is not null)
-				response = deserialized;
-
-			return response;
-		}
-
-		public async Task<bool> PutAsync(string extendedUrl, dynamic request, bool configureAwait, string jwToken)
-		{
-			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwToken);
-			var requestObject = JsonConvert.SerializeObject(request);
-			var buffer = Encoding.UTF8.GetBytes(requestObject);
-			var byteContent = new ByteArrayContent(buffer);
-			byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-			var apiResponse = await _httpClient.PutAsync(extendedUrl, byteContent).ConfigureAwait(configureAwait);
+			HttpClientRequestBuilder.AddJwtHeader(_httpClient, jwToken);
+			var byteContent = HttpClientRequestBuilder.Request(request);
+			var apiResponse = await _httpClient.PutAsync(url, byteContent);
 			return apiResponse.IsSuccessStatusCode;
 		}
 	}

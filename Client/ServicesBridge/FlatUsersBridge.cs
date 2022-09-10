@@ -22,7 +22,7 @@ namespace Client.ServicesBridge
 			if (reference == Guid.Empty)
 				return user;
 
-			var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_usersApiUrl}/{reference}", false, jwToken)).Result;
+			var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_usersApiUrl}/{reference}", jwToken)).Result;
 
 			if (apiResponse is not null && !apiResponse.HasError)
 				user = JsonConvert.DeserializeObject<UserResponse>(apiResponse.Results.ToString());

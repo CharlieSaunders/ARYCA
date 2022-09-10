@@ -27,7 +27,7 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult(_url, false, jwToken)).Result;
+				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult(_url, jwToken)).Result;
 
 				if (apiResponse is not null)
 					cryptos = JsonConvert.DeserializeObject<List<RawStockResponse>>(apiResponse.Results.ToString());
@@ -46,7 +46,7 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_url}/Historical", false, jwToken)).Result;
+				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_url}/Historical", jwToken)).Result;
 
 				if (apiResponse is not null)
 					historical = JsonConvert.DeserializeObject<List<UserHistoricalStocks>>(apiResponse.Results.ToString());
@@ -64,7 +64,7 @@ namespace Client.ServicesBridge
 			var purchase = false;
 			try
 			{
-				purchase = await Task.FromResult(_genericHttpClient.PutAsync($"{_url}/Purchase", request, false, jwToken)).Result;
+				purchase = await Task.FromResult(_genericHttpClient.PutAsync($"{_url}/Purchase", request, jwToken)).Result;
 			}
 			catch
 			{
@@ -82,7 +82,7 @@ namespace Client.ServicesBridge
 			var sold = false;
 			try
 			{
-				sold = await Task.FromResult(_genericHttpClient.PutAsync($"{_url}/Sell", request, false, jwToken)).Result;
+				sold = await Task.FromResult(_genericHttpClient.PutAsync($"{_url}/Sell", request, jwToken)).Result;
 			}
 			catch
 			{
@@ -100,7 +100,7 @@ namespace Client.ServicesBridge
 			var investments = new List<UserInvestments>();
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_url}/Purchased", false, jwToken)).Result;
+				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_url}/Purchased", jwToken)).Result;
 
 				if (apiResponse is not null)
 					investments = JsonConvert.DeserializeObject<List<UserInvestments>>(apiResponse.Results.ToString());

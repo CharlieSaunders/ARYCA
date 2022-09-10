@@ -24,10 +24,9 @@ namespace Client.ServicesBridge
 		public async Task<User> CreateSession(string username)
 		{
 			var user = new User();
-			Console.WriteLine(_genericHttpClient.GetUrl());
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.PostAsyncConvertResult($"{_usersApiUrl}/Session/{username}", "{ }", false)).Result;
+				var apiResponse = await _genericHttpClient.PostAsyncConvertResult($"{_usersApiUrl}/Session/{username}", "{ }");
 
 				if (apiResponse is not null && !apiResponse.HasError)
 					user = JsonConvert.DeserializeObject<User>(apiResponse.Results.ToString());
@@ -49,7 +48,7 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_usersApiUrl}/{reference}", false, jwToken)).Result;
+				var apiResponse = await _genericHttpClient.GetAsyncConvertResult($"{_usersApiUrl}/{reference}", jwToken);
 
 				if (apiResponse is not null)
 					user = JsonConvert.DeserializeObject<UserResponse>(apiResponse.Results.ToString());
@@ -68,7 +67,7 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_usersApiUrl}/all", false, jwToken)).Result;
+				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_usersApiUrl}/all", jwToken)).Result;
 
 				if (apiResponse is not null)
 					users = JsonConvert.DeserializeObject<List<SlimUser>>(apiResponse.Results.ToString());
@@ -86,7 +85,7 @@ namespace Client.ServicesBridge
 			var updated = false;
 			try
 			{
-				updated = await Task.FromResult(_genericHttpClient.PutAsync($"{_usersApiUrl}", request, false, jwToken)).Result;
+				updated = await Task.FromResult(_genericHttpClient.PutAsync($"{_usersApiUrl}", request, jwToken)).Result;
 			}
 			catch
 			{
