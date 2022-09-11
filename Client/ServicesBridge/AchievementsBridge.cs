@@ -9,12 +9,12 @@ namespace Client.ServicesBridge
 {
 	public class AchievementsBridge
 	{
-		private readonly GenericHttpClient _genericHttpClient;
+		private readonly IGenericHttpClient _genericHttpClient;
 		private readonly ToasterService _toasterService;
 
 		private readonly string _achievementUrl = "/Public/Achievements";
 
-		public AchievementsBridge(GenericHttpClient genericHttpClient, ToasterService toasterService)
+		public AchievementsBridge(IGenericHttpClient genericHttpClient, ToasterService toasterService)
 		{
 			_toasterService = toasterService;
 			_genericHttpClient = genericHttpClient;

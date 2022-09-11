@@ -7,7 +7,17 @@ using System.Text;
 
 namespace Common.HttpClients
 {
-	public class GenericHttpClient
+	public interface IGenericHttpClient
+	{
+		public Task<string> GetAsStringAsync(string url);
+		public Task<bool> DeleteAsyncInUrl(string url, string jwToken);
+		public Task<bool> PostAsync(string url, dynamic request, string jwToken);
+		public Task<IServicesResponse> PostAsyncAnonymous(string url, dynamic request);
+		public Task<IServicesResponse> GetAsyncConvertResult(string url, string jwToken);
+		public Task<bool> PutAsync(string url, dynamic request, string jwToken);
+	}
+
+	public class GenericHttpClient : IGenericHttpClient
 	{
 		private readonly HttpClient _httpClient;
 		public GenericHttpClient()
