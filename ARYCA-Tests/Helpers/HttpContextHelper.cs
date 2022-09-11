@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Common.Entities.Users;
+using Microsoft.AspNetCore.Http;
 
 namespace ARYCA_Tests.Helpers
 {
@@ -16,6 +17,18 @@ namespace ARYCA_Tests.Helpers
 			var context = new DefaultHttpContext();
 			context.Request.Headers["X-ARYCA-UserReference"] = userReference;
 			context.Request.Headers["Authorization"] = $"Bearer {jwt}";
+			return context;
+		}
+
+		public static HttpContext GetForUser(User user)
+		{
+			var context = new DefaultHttpContext();
+			if (user.IsValidReference())
+				context.Request.Headers["X-ARYCA-UserReference"] = user.UserReference.ToString();
+
+			if(user.AuthenticationToken != String.Empty)
+				context.Request.Headers["Authorization"] = $"Bearer {user.AuthenticationToken}";
+
 			return context;
 		}
 	}

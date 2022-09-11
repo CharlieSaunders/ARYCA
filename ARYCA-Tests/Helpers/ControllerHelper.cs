@@ -1,7 +1,10 @@
 ﻿using Common.Data;
+using Common.Entities.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using Services.Controllers;
+using Services.Helpers;
 
 namespace ARYCA_Tests.Helpers
 {
@@ -69,6 +72,17 @@ namespace ARYCA_Tests.Helpers
 				ControllerContext = new ControllerContext()
 				{
 					HttpContext = context
+				},
+			};
+		}
+
+		public static UsersController GetUsersController(DataContext dataContext, User user)
+		{
+			return new UsersController(dataContext, new Mock<ITokenService>().Object)
+			{
+				ControllerContext = new ControllerContext()
+				{
+					HttpContext = HttpContextHelper.GetForUser(user)
 				},
 			};
 		}
