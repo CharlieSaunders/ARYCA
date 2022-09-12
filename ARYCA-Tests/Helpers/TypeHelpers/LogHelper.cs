@@ -19,5 +19,13 @@ namespace ARYCA_Tests.Helpers.TypeHelpers
 				Occurances = 1
 			};
 		}
+
+		public static List<Log> GetExistingLogList()
+		{
+			return new List<Log>()
+			{
+				GetExistingLog()
+			};
+		}
 	}
 }

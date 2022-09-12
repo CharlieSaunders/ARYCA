@@ -1,4 +1,6 @@
-﻿using Common.Entities.Pledges;
+﻿using Common.Classes.Users;
+using Common.DTO.Pledges;
+using Common.Entities.Pledges;
 using Common.Entities.Users;
 
 namespace ARYCA_Tests.Helpers.TypeHelpers
@@ -15,6 +17,14 @@ namespace ARYCA_Tests.Helpers.TypeHelpers
 			};
 		}
 
+		public static List<Pledge> GetPledgesList()
+		{
+			return new List<Pledge>()
+			{
+				GetOldPledge()
+			};
+		}
+
 		public static UserPledges GetUserPledge(Guid assignerReference, Guid assigneeReference, Guid pledgeReference, string pledgeDetails)
 		{
 			return new UserPledges
@@ -27,6 +37,29 @@ namespace ARYCA_Tests.Helpers.TypeHelpers
 				AssigneeAccepted = false,
 				AssigneeCompleted = false,
 				AssignerSignedOff = false
+			};
+		}
+
+		public static AssignedPledgeResponse GetAssignedPledge()
+		{
+			return new AssignedPledgeResponse
+			{
+				PledgeId = 1,
+				Name = "Name",
+				Details = "Details",
+				Value = 1,
+				Assignee = new SlimUser(UserHelper.GetActiveUser()),
+				Assigner = new SlimUser(UserHelper.GetInactiveUser("test", 1)),
+				Status = PledgeStatuses.PledgeStatus.AwaitingAcceptance,
+				IsWithYou = true
+			};
+		}
+
+		public static List<AssignedPledgeResponse> GetAssignedList()
+		{
+			return new List<AssignedPledgeResponse>()
+			{
+				GetAssignedPledge()
 			};
 		}
 	}

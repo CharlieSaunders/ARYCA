@@ -59,6 +59,24 @@ namespace Client.ServicesBridge
 			return historical;
 		}
 
+		public async Task<List<UserInvestments>> GetUserCrypto(string jwToken)
+		{
+			var investments = new List<UserInvestments>();
+			try
+			{
+				var apiResponse = await _genericHttpClient.GetAsyncConvertResult($"{_url}/Purchased", jwToken);
+
+				if (apiResponse is not null)
+					investments = JsonConvert.DeserializeAnonymousType<List<UserInvestments>>(apiResponse.Results.ToString(), investments);
+			}
+			catch
+			{
+				_toasterService.AddToast(SimpleToast.NewToast("Get User Crypto", $"Unknown error getting users crypto", MessageColour.Danger, 5));
+			}
+
+			return investments;
+		}
+
 		public async Task PurchaseCrypto(StockPurchaseRequest request, string jwToken)
 		{
 			var purchase = false;
@@ -93,24 +111,6 @@ namespace Client.ServicesBridge
 				_toasterService.AddToast(SimpleToast.NewToast("Investing Sale", $"Successfully sold {request.Symbol}", MessageColour.Success, 5));
 			else
 				_toasterService.AddToast(SimpleToast.NewToast("Investing Sale", $"Failed to sell {request.Symbol}", MessageColour.Danger, 5));
-		}
-
-		public async Task<List<UserInvestments>> GetUserCrypto(string jwToken)
-		{
-			var investments = new List<UserInvestments>();
-			try
-			{
-				var apiResponse = await _genericHttpClient.GetAsyncConvertResult($"{_url}/Purchased", jwToken);
-
-				if (apiResponse is not null)
-					investments = JsonConvert.DeserializeAnonymousType<List<UserInvestments>>(apiResponse.Results.ToString(), investments);
-			}
-			catch
-			{
-				_toasterService.AddToast(SimpleToast.NewToast("Get User Crypto", $"Unknown error getting users crypto", MessageColour.Danger, 5));
-			}
-
-			return investments;
 		}
 	}
 }

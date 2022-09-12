@@ -37,4 +37,16 @@
     <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Clients\Bridges\Config\" />
+    <None Remove="Clients\Bridges\Habits\" />
+    <None Remove="Clients\Bridges\Logs\" />
+    <None Remove="Clients\Bridges\Pledges\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Clients\Bridges\Config\" />
+    <Folder Include="Clients\Bridges\Habits\" />
+    <Folder Include="Clients\Bridges\Logs\" />
+    <Folder Include="Clients\Bridges\Pledges\" />
+  </ItemGroup>
 </Project>

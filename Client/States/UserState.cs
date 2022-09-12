@@ -1,4 +1,5 @@
 ﻿using Client.ServicesBridge;
+using Client.States.Toast;
 using Common.Classes.Users;
 using Common.Entities.Users;
 using Common.HttpClients;
@@ -10,11 +11,11 @@ namespace Client.States
 	{
 		private UserResponse AppUser { get; set; }
 
-		private readonly FlatUsersBridge _userBridge;
+		private readonly UsersBridge _userBridge;
 
 		public UserState()
 		{
-			_userBridge = new FlatUsersBridge(new GenericHttpClient());
+			_userBridge = new UsersBridge(new GenericHttpClient(), new ToasterService());
 			AppUser = new UserResponse();
 		}
 

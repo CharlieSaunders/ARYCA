@@ -18,6 +18,14 @@ namespace ARYCA_Tests.Helpers.TypeHelpers
 			};
 		}
 
+		public static List<Habit> GetCompletableHabitList()
+		{
+			return new List<Habit>()
+			{
+				GetCompletableHabit()
+			};
+		}
+
 		public static UserHabits GetCompletableUserHabit(Guid userReference, Guid habitReference)
 		{
 			return new UserHabits
