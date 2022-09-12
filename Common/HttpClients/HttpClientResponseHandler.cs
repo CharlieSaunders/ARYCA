@@ -1,5 +1,4 @@
-﻿using System;
-using Common.Classes;
+﻿using Common.Classes;
 using Newtonsoft.Json;
 
 namespace Common.HttpClients

@@ -44,7 +44,7 @@ namespace Client.Pages
 
 			await GetUser();
 			await GetUnlocks();
-			await GetAchievements();
+			await GetUserAchievements();
 		}
 
 		private string GetUserTheme(string value)
@@ -86,13 +86,9 @@ namespace Client.Pages
 			StateHasChanged();
 		}
 
-		protected async Task GetAchievements()
+		protected async Task GetUserAchievements()
 		{
-			var authToken = await LocalStorageHelper.GetAuthToken(_localStorage);
-
-			_achievements = await _achievementsBridge.GetAchievements(authToken);
-
-			var userAchievements = await _achievementsBridge.GetUserAchievements(authToken);
+			var userAchievements = await _achievementsBridge.GetUserAchievements(await LocalStorageHelper.GetAuthToken(_localStorage));
 			_userAchievements = userAchievements.OrderByDescending(x => x.TimesUnlocked).ToList();
 			StateHasChanged();
 		}

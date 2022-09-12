@@ -6,11 +6,11 @@ namespace Client.ServicesBridge
 {
 	public class FlatUsersBridge
 	{
-		private readonly GenericHttpClient _genericHttpClient;
+		private readonly IGenericHttpClient _genericHttpClient;
 
 		private readonly string _usersApiUrl = "/Public/Users";
 
-		public FlatUsersBridge(GenericHttpClient httpClient)
+		public FlatUsersBridge(IGenericHttpClient httpClient)
 		{
 			_genericHttpClient = httpClient;
 		}
@@ -22,10 +22,10 @@ namespace Client.ServicesBridge
 			if (reference == Guid.Empty)
 				return user;
 
-			var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_usersApiUrl}/{reference}", jwToken)).Result;
+			var apiResponse = await _genericHttpClient.GetAsyncConvertResult($"{_usersApiUrl}/{reference}", jwToken);
 
 			if (apiResponse is not null && !apiResponse.HasError)
-				user = JsonConvert.DeserializeObject<UserResponse>(apiResponse.Results.ToString());
+				user = JsonConvert.DeserializeAnonymousType<UserResponse>(apiResponse.Results.ToString(), user);
 
 			return user;
 		}

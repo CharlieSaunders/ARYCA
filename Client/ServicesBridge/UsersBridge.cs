@@ -10,12 +10,12 @@ namespace Client.ServicesBridge
 {
 	public class UsersBridge
 	{
-		private readonly GenericHttpClient _genericHttpClient;
+		private readonly IGenericHttpClient _genericHttpClient;
 		private readonly ToasterService _toasterService;
 
 		private readonly string _usersApiUrl = "/Public/Users";
 
-		public UsersBridge(GenericHttpClient httpClient, ToasterService toasterService)
+		public UsersBridge(IGenericHttpClient httpClient, ToasterService toasterService)
 		{
 			_genericHttpClient = httpClient;
 			_toasterService = toasterService;
@@ -29,7 +29,7 @@ namespace Client.ServicesBridge
 				var apiResponse = await _genericHttpClient.PostAsyncAnonymous($"{_usersApiUrl}/Session/{username}", "{ }");
 
 				if (apiResponse is not null && !apiResponse.HasError)
-					user = JsonConvert.DeserializeObject<User>(apiResponse.Results.ToString());
+					user = JsonConvert.DeserializeAnonymousType<User>(apiResponse.Results.ToString(), user);
 				else
 					_toasterService.AddToast(SimpleToast.NewToast("Login", $"Failed to login with the details given.", MessageColour.Danger, 5));
 			}
@@ -51,7 +51,7 @@ namespace Client.ServicesBridge
 				var apiResponse = await _genericHttpClient.GetAsyncConvertResult($"{_usersApiUrl}/{reference}", jwToken);
 
 				if (apiResponse is not null)
-					user = JsonConvert.DeserializeObject<UserResponse>(apiResponse.Results.ToString());
+					user = JsonConvert.DeserializeAnonymousType<UserResponse>(apiResponse.Results.ToString(), user);
 			}
 			catch
 			{
@@ -67,10 +67,10 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_usersApiUrl}/all", jwToken)).Result;
+				var apiResponse = await _genericHttpClient.GetAsyncConvertResult($"{_usersApiUrl}/all", jwToken);
 
 				if (apiResponse is not null)
-					users = JsonConvert.DeserializeObject<List<SlimUser>>(apiResponse.Results.ToString());
+					users = JsonConvert.DeserializeAnonymousType<List<SlimUser>>(apiResponse.Results.ToString(), users);
 			}
 			catch
 			{
@@ -85,7 +85,7 @@ namespace Client.ServicesBridge
 			var updated = false;
 			try
 			{
-				updated = await Task.FromResult(_genericHttpClient.PutAsync($"{_usersApiUrl}", request, jwToken)).Result;
+				updated = await _genericHttpClient.PutAsync($"{_usersApiUrl}", request, jwToken);
 			}
 			catch
 			{

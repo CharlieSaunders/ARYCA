@@ -1,7 +1,6 @@
 ﻿using Client.States.Toast;
 using Client.States.Toast.Types;
 using Common.DTO.Achievements;
-using Common.Entities.Achievements;
 using Common.HttpClients;
 using Newtonsoft.Json;
 
@@ -23,13 +22,11 @@ namespace Client.ServicesBridge
 		public async Task<List<UserAchievementResponse>> GetUserAchievements(string jwToken)
 		{
 			var userAchievements = new List<UserAchievementResponse>();
-
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_achievementUrl}/User", jwToken)).Result;
-
+				var apiResponse = await _genericHttpClient.GetAsyncConvertResult($"{_achievementUrl}/User", jwToken);
 				if (apiResponse is not null && !apiResponse.HasError)
-					userAchievements = JsonConvert.DeserializeObject<List<UserAchievementResponse>>(apiResponse.Results.ToString());
+					userAchievements = JsonConvert.DeserializeAnonymousType<List<UserAchievementResponse>>(apiResponse.Results.ToString(), userAchievements);
 				else
 					_toasterService.AddToast(SimpleToast.NewToast("Get Achievements", $"Failed to get all user achievements.", MessageColour.Danger, 5));
 			}
@@ -41,32 +38,11 @@ namespace Client.ServicesBridge
 			return userAchievements;
 		}
 
-		public async Task<List<Achievement>> GetAchievements(string jwToken)
-		{
-			var achievements = new List<Achievement>();
-
-			try
-			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_achievementUrl}", jwToken)).Result;
-
-				if (apiResponse is not null && !apiResponse.HasError)
-					achievements = JsonConvert.DeserializeObject<List<Achievement>>(apiResponse.Results.ToString());
-				else
-					_toasterService.AddToast(SimpleToast.NewToast("Get Achievements", $"Failed to get all achievements.", MessageColour.Danger, 5));
-			}
-			catch
-			{
-				_toasterService.AddToast(SimpleToast.NewToast("Get Achievements", $"Unknown error getting all achievements.", MessageColour.Danger, 5));
-			}
-
-			return achievements;
-		}
-
 		public async Task UnlockAchievement(string jwToken, int achievementId)
 		{
 			try
 			{
-				await Task.FromResult(_genericHttpClient.PutAsync($"{_achievementUrl}/User/{achievementId}", "{}", jwToken)).Result;
+				await _genericHttpClient.PutAsync($"{_achievementUrl}/User/{achievementId}", "{}", jwToken);
 			}
 			catch
 			{

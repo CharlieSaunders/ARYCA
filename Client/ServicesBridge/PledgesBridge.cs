@@ -9,11 +9,11 @@ namespace Client.ServicesBridge
 {
 	public class PledgesBridge
 	{
-		private readonly GenericHttpClient _genericHttpClient;
+		private readonly IGenericHttpClient _genericHttpClient;
 		private readonly ToasterService _toasterService;
 		private readonly string _habitsApiUrl = "/Public/Pledges";
 
-		public PledgesBridge(GenericHttpClient httpClient, ToasterService toasterService)
+		public PledgesBridge(IGenericHttpClient httpClient, ToasterService toasterService)
 		{
 			_genericHttpClient = httpClient;
 			_toasterService = toasterService;
@@ -25,10 +25,10 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult(_habitsApiUrl, jwToken)).Result;
+				var apiResponse = await _genericHttpClient.GetAsyncConvertResult(_habitsApiUrl, jwToken);
 
 				if (apiResponse is not null)
-					pledges = JsonConvert.DeserializeObject<List<Pledge>>(apiResponse.Results.ToString());
+					pledges = JsonConvert.DeserializeAnonymousType<List<Pledge>>(apiResponse.Results.ToString(), pledges);
 			}
 			catch
 			{
@@ -44,10 +44,10 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_habitsApiUrl}/Assigned", jwToken)).Result;
+				var apiResponse = await _genericHttpClient.GetAsyncConvertResult($"{_habitsApiUrl}/Assigned", jwToken);
 
 				if (apiResponse is not null)
-					pledges = JsonConvert.DeserializeObject<List<AssignedPledgeResponse>>(apiResponse.Results.ToString());
+					pledges = JsonConvert.DeserializeAnonymousType<List<AssignedPledgeResponse>>(apiResponse.Results.ToString(), pledges);
 			}
 			catch
 			{
@@ -62,7 +62,7 @@ namespace Client.ServicesBridge
 			var created = false;
 			try
 			{
-				created = await Task.FromResult(_genericHttpClient.PostAsync(_habitsApiUrl, request, jwToken)).Result;
+				created = await _genericHttpClient.PostAsync(_habitsApiUrl, request, jwToken);
 			}
 			catch
 			{
@@ -80,7 +80,7 @@ namespace Client.ServicesBridge
 			var updated = false;
 			try
 			{
-				updated = await Task.FromResult(_genericHttpClient.PutAsync(_habitsApiUrl, request, jwToken)).Result;
+				updated = await _genericHttpClient.PutAsync(_habitsApiUrl, request, jwToken);
 			}
 			catch
 			{
@@ -100,7 +100,7 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				assigned = await Task.FromResult(_genericHttpClient.PutAsync($"{_habitsApiUrl}/Assign", request, jwToken)).Result;
+				assigned = await _genericHttpClient.PutAsync($"{_habitsApiUrl}/Assign", request, jwToken);
 			}
 			catch
 			{
@@ -119,7 +119,7 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				updateStatus = await Task.FromResult(_genericHttpClient.PutAsync($"{_habitsApiUrl}/Assigned/Status", request, jwToken)).Result;
+				updateStatus = await _genericHttpClient.PutAsync($"{_habitsApiUrl}/Assigned/Status", request, jwToken);
 			}
 			catch
 			{
@@ -137,7 +137,7 @@ namespace Client.ServicesBridge
 			var deleted = false;
 			try
 			{
-				deleted = await Task.FromResult(_genericHttpClient.DeleteAsyncInUrl($"{_habitsApiUrl}/{pledgeReference}", jwToken)).Result;
+				deleted = await _genericHttpClient.DeleteAsyncInUrl($"{_habitsApiUrl}/{pledgeReference}", jwToken);
 			}
 			catch
 			{

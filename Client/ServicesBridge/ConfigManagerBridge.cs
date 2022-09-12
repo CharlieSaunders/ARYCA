@@ -9,12 +9,12 @@ namespace Client.ServicesBridge
 {
 	public class ConfigManagerBridge
 	{
-		private readonly GenericHttpClient _genericHttpClient;
+		private readonly IGenericHttpClient _genericHttpClient;
 		private readonly ToasterService _toasterService;
 
 		private readonly string _configUrl = "/Public/Config";
 
-		public ConfigManagerBridge(GenericHttpClient genericHttpClient, ToasterService toasterService)
+		public ConfigManagerBridge(IGenericHttpClient genericHttpClient, ToasterService toasterService)
 		{
 			_toasterService = toasterService;
 			_genericHttpClient = genericHttpClient;
@@ -25,10 +25,10 @@ namespace Client.ServicesBridge
 			var appConfig = new ApplicationConfiguration();
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_configUrl}/Application", jwToken)).Result;
+				var apiResponse = await _genericHttpClient.GetAsyncConvertResult($"{_configUrl}/Application", jwToken);
 
 				if (apiResponse is not null)
-					appConfig = JsonConvert.DeserializeObject<ApplicationConfiguration>(apiResponse.Results.ToString());
+					appConfig = JsonConvert.DeserializeAnonymousType<ApplicationConfiguration>(apiResponse.Results.ToString(), appConfig);
 			}
 			catch
 			{
@@ -40,7 +40,7 @@ namespace Client.ServicesBridge
 
 		public async Task UpdateAppConfig(UpdateAppConfigRequest request, string jwToken)
 		{
-			var added = await Task.FromResult(_genericHttpClient.PutAsync($"{_configUrl}/Application", request, jwToken)).Result;
+			var added = await _genericHttpClient.PutAsync($"{_configUrl}/Application", request, jwToken);
 
 			if (added)
 				_toasterService.AddToast(SimpleToast.NewToast("Update App Config", $"Successfully updated app config ", MessageColour.Success, 5));

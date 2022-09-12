@@ -8,11 +8,11 @@ namespace Client.ServicesBridge
 {
 	public class UnlockablesBridge
 	{
-		private readonly GenericHttpClient _genericHttpClient;
+		private readonly IGenericHttpClient _genericHttpClient;
 		private readonly ToasterService _toasterService;
 		private readonly string _unlockablesApiUrl = "/Public/Unlockables";
 
-		public UnlockablesBridge(GenericHttpClient httpClient, ToasterService toasterService)
+		public UnlockablesBridge(IGenericHttpClient httpClient, ToasterService toasterService)
 		{
 			_genericHttpClient = httpClient;
 			_toasterService = toasterService;
@@ -24,10 +24,10 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult(_unlockablesApiUrl, jwToken)).Result;
+				var apiResponse = await _genericHttpClient.GetAsyncConvertResult(_unlockablesApiUrl, jwToken);
 
 				if (apiResponse is not null)
-					habits = JsonConvert.DeserializeObject<List<UnlockableResponse>>(apiResponse.Results.ToString());
+					habits = JsonConvert.DeserializeAnonymousType<List<UnlockableResponse>>(apiResponse.Results.ToString(), habits);
 			}
 			catch
 			{
@@ -43,10 +43,10 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_unlockablesApiUrl}/Unlocked", jwToken)).Result;
+				var apiResponse = await _genericHttpClient.GetAsyncConvertResult($"{_unlockablesApiUrl}/Unlocked", jwToken);
 
 				if (apiResponse is not null)
-					unlocks = JsonConvert.DeserializeObject<List<UnlockableResponse>>(apiResponse.Results.ToString());
+					unlocks = JsonConvert.DeserializeAnonymousType<List<UnlockableResponse>>(apiResponse.Results.ToString(), unlocks);
 			}
 			catch
 			{
@@ -62,7 +62,7 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				unlocked = await Task.FromResult(_genericHttpClient.PutAsync($"{_unlockablesApiUrl}/Unlock/{unlockReference}", "{}", jwToken)).Result;
+				unlocked = await _genericHttpClient.PutAsync($"{_unlockablesApiUrl}/Unlock/{unlockReference}", "{}", jwToken);
 			}
 			catch
 			{
@@ -81,7 +81,7 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				unlocked = await Task.FromResult(_genericHttpClient.PutAsync($"{_unlockablesApiUrl}/Unlock/Gift", request, jwToken)).Result;
+				unlocked = await _genericHttpClient.PutAsync($"{_unlockablesApiUrl}/Unlock/Gift", request, jwToken);
 			}
 			catch
 			{
@@ -99,7 +99,7 @@ namespace Client.ServicesBridge
 			var updated = false;
 			try
 			{
-				updated = await Task.FromResult(_genericHttpClient.PutAsync($"{_unlockablesApiUrl}/Update", request, jwToken)).Result;
+				updated = await _genericHttpClient.PutAsync($"{_unlockablesApiUrl}/Update", request, jwToken);
 			}
 			catch
 			{
@@ -118,7 +118,7 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				deleted = await Task.FromResult(_genericHttpClient.DeleteAsyncInUrl($"{_unlockablesApiUrl}/{reference}", jwToken)).Result;
+				deleted = await _genericHttpClient.DeleteAsyncInUrl($"{_unlockablesApiUrl}/{reference}", jwToken);
 			}
 			catch
 			{

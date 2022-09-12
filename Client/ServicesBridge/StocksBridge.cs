@@ -11,11 +11,11 @@ namespace Client.ServicesBridge
 {
 	public class StocksBridge
 	{
-		private readonly GenericHttpClient _genericHttpClient;
+		private readonly IGenericHttpClient _genericHttpClient;
 		private readonly ToasterService _toasterService;
 		private readonly string _url = "Public/Stocks";
 
-		public StocksBridge(GenericHttpClient httpClient, ToasterService toasterService)
+		public StocksBridge(IGenericHttpClient httpClient, ToasterService toasterService)
 		{
 			_toasterService = toasterService;
 			_genericHttpClient = httpClient;
@@ -27,10 +27,10 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult(_url, jwToken)).Result;
+				var apiResponse = await _genericHttpClient.GetAsyncConvertResult(_url, jwToken);
 
 				if (apiResponse is not null)
-					cryptos = JsonConvert.DeserializeObject<List<RawStockResponse>>(apiResponse.Results.ToString());
+					cryptos = JsonConvert.DeserializeAnonymousType<List<RawStockResponse>>(apiResponse.Results.ToString(), cryptos);
 			}
 			catch
 			{
@@ -46,10 +46,10 @@ namespace Client.ServicesBridge
 
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_url}/Historical", jwToken)).Result;
+				var apiResponse = await _genericHttpClient.GetAsyncConvertResult($"{_url}/Historical", jwToken);
 
 				if (apiResponse is not null)
-					historical = JsonConvert.DeserializeObject<List<UserHistoricalStocks>>(apiResponse.Results.ToString());
+					historical = JsonConvert.DeserializeAnonymousType<List<UserHistoricalStocks>>(apiResponse.Results.ToString(), historical);
 			}
 			catch
 			{
@@ -64,7 +64,7 @@ namespace Client.ServicesBridge
 			var purchase = false;
 			try
 			{
-				purchase = await Task.FromResult(_genericHttpClient.PutAsync($"{_url}/Purchase", request, jwToken)).Result;
+				purchase = await _genericHttpClient.PutAsync($"{_url}/Purchase", request, jwToken);
 			}
 			catch
 			{
@@ -82,7 +82,7 @@ namespace Client.ServicesBridge
 			var sold = false;
 			try
 			{
-				sold = await Task.FromResult(_genericHttpClient.PutAsync($"{_url}/Sell", request, jwToken)).Result;
+				sold = await _genericHttpClient.PutAsync($"{_url}/Sell", request, jwToken);
 			}
 			catch
 			{
@@ -100,10 +100,10 @@ namespace Client.ServicesBridge
 			var investments = new List<UserInvestments>();
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult($"{_url}/Purchased", jwToken)).Result;
+				var apiResponse = await _genericHttpClient.GetAsyncConvertResult($"{_url}/Purchased", jwToken);
 
 				if (apiResponse is not null)
-					investments = JsonConvert.DeserializeObject<List<UserInvestments>>(apiResponse.Results.ToString());
+					investments = JsonConvert.DeserializeAnonymousType<List<UserInvestments>>(apiResponse.Results.ToString(), investments);
 			}
 			catch
 			{

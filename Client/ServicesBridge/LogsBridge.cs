@@ -8,12 +8,12 @@ namespace Client.ServicesBridge
 {
 	public class LogsBridge
 	{
-		private readonly GenericHttpClient _genericHttpClient;
+		private readonly IGenericHttpClient _genericHttpClient;
 		private readonly ToasterService _toasterService;
 
 		private readonly string _apiUrl = "/Public/Config/Logs";
 
-		public LogsBridge(GenericHttpClient genericHttpClient, ToasterService toasterService)
+		public LogsBridge(IGenericHttpClient genericHttpClient, ToasterService toasterService)
 		{
 			_toasterService = toasterService;
 			_genericHttpClient = genericHttpClient;
@@ -24,10 +24,10 @@ namespace Client.ServicesBridge
 			var logs = new List<Log>();
 			try
 			{
-				var apiResponse = await Task.FromResult(_genericHttpClient.GetAsyncConvertResult(_apiUrl, jwToken)).Result;
+				var apiResponse = await _genericHttpClient.GetAsyncConvertResult(_apiUrl, jwToken);
 
 				if (apiResponse is not null)
-					logs = JsonConvert.DeserializeObject<List<Log>>(apiResponse.Results.ToString());
+					logs = JsonConvert.DeserializeAnonymousType<List<Log>>(apiResponse.Results.ToString(), logs);
 			}
 			catch
 			{
@@ -43,7 +43,7 @@ namespace Client.ServicesBridge
 			var deleted = false;
 			try
 			{
-				deleted = await Task.FromResult(_genericHttpClient.DeleteAsyncInUrl($"{_apiUrl}/{logId}", jwToken)).Result;
+				deleted = await _genericHttpClient.DeleteAsyncInUrl($"{_apiUrl}/{logId}", jwToken);
 			}
 			catch
 			{
