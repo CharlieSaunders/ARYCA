@@ -42,11 +42,17 @@
     <None Remove="Clients\Bridges\Habits\" />
     <None Remove="Clients\Bridges\Logs\" />
     <None Remove="Clients\Bridges\Pledges\" />
+    <None Remove="Clients\Bridges\Stocks\" />
+    <None Remove="Clients\Bridges\Unlockables\" />
+    <None Remove="Clients\Bridges\Users\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Clients\Bridges\Config\" />
     <Folder Include="Clients\Bridges\Habits\" />
     <Folder Include="Clients\Bridges\Logs\" />
     <Folder Include="Clients\Bridges\Pledges\" />
+    <Folder Include="Clients\Bridges\Stocks\" />
+    <Folder Include="Clients\Bridges\Unlockables\" />
+    <Folder Include="Clients\Bridges\Users\" />
   </ItemGroup>
 </Project>

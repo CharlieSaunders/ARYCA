@@ -1,4 +1,5 @@
-﻿using Common.Entities.Users;
+﻿using Common.Classes.Users;
+using Common.Entities.Users;
 using static Common.Entities.Users.User;
 
 namespace ARYCA_Tests.Helpers.TypeHelpers
@@ -42,6 +43,11 @@ namespace ARYCA_Tests.Helpers.TypeHelpers
 				HasActiveSession = false,
 				Role = UserRole.Standard
 			};
+		}
+
+		public static UserResponse GetUserResponse()
+		{
+			return new UserResponse(GetActiveUser());
 		}
 	}
 }

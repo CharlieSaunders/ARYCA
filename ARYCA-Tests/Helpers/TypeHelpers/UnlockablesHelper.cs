@@ -1,4 +1,5 @@
-﻿using Common.Entities.Unlockables;
+﻿using Common.DTO.Unlockables;
+using Common.Entities.Unlockables;
 
 namespace ARYCA_Tests.Helpers.TypeHelpers
 {
@@ -13,6 +14,28 @@ namespace ARYCA_Tests.Helpers.TypeHelpers
 				Name = "Unlockable Title",
 				Price = 10,
 				Value = "Title"
+			};
+		}
+
+		public static UnlockableResponse GetUnlockableResponse()
+		{
+			return new UnlockableResponse
+			{
+				UnlockableReference = Guid.NewGuid(),
+				Name = "Name",
+				Type = "Type",
+				Value = "Value",
+				Unlocked = true,
+				Price = 1,
+				Display = true
+			};
+		}
+
+		public static List<UnlockableResponse> GetUnlockableResponseList()
+		{
+			return new List<UnlockableResponse>()
+			{
+				GetUnlockableResponse()
 			};
 		}
 	}
