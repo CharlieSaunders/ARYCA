@@ -1,7 +1,7 @@
 ﻿using Common.Entities.Users;
 using static Common.Entities.Users.User;
 
-namespace ARYCA_Tests.Helpers
+namespace ARYCA_Tests.Helpers.TypeHelpers
 {
 	public static class UserHelper
 	{

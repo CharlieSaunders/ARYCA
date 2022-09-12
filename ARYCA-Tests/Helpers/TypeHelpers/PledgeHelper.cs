@@ -1,7 +1,7 @@
 ﻿using Common.Entities.Pledges;
 using Common.Entities.Users;
 
-namespace ARYCA_Tests.Helpers
+namespace ARYCA_Tests.Helpers.TypeHelpers
 {
 	public static class PledgeHelper
 	{

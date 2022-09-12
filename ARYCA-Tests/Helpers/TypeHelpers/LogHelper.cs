@@ -1,6 +1,6 @@
 ﻿using Common.Entities.Logs;
 
-namespace ARYCA_Tests.Helpers
+namespace ARYCA_Tests.Helpers.TypeHelpers
 {
 	public static class LogHelper
 	{
