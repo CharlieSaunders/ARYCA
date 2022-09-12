@@ -27,7 +27,7 @@ namespace Common.HttpClients
 		public async Task<bool> DeleteAsyncInUrl(string url, string jwToken)
 		{
 			HttpClientRequestBuilder.AddJwtHeader(_httpClient, jwToken);
-			var response = await HttpClientResponseHandler.From( await _httpClient.DeleteAsync(url));
+			var response = await HttpClientResponseHandler.From(await _httpClient.DeleteAsync(url));
 			return response.Results;
 		}
 

@@ -1,5 +1,4 @@
-﻿using System;
-using Common.DTO.Achievements;
+﻿using Common.DTO.Achievements;
 
 namespace ARYCA_Tests.Helpers.TypeHelpers
 {

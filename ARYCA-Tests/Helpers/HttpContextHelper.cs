@@ -26,7 +26,7 @@ namespace ARYCA_Tests.Helpers
 			if (user.IsValidReference())
 				context.Request.Headers["X-ARYCA-UserReference"] = user.UserReference.ToString();
 
-			if(user.AuthenticationToken != String.Empty)
+			if (user.AuthenticationToken != String.Empty)
 				context.Request.Headers["Authorization"] = $"Bearer {user.AuthenticationToken}";
 
 			return context;
