@@ -2,7 +2,8 @@
 using Common.Data;
 using Common.DTO.Logs;
 using Common.Entities.Logs;
-using Infrastructure.Repositories;
+using Infrastructure.EF.Logs;
+using Infrastructure.Interfaces;
 
 namespace Services.Routes
 {
@@ -19,7 +20,7 @@ namespace Services.Routes
 
 		public LogsService(DataContext db)
 		{
-			_logsRepository = new LogsRepository(db);
+			_logsRepository = new EFLogsRepository(db);
 		}
 
 		public IServicesResponse Get() => new(_logsRepository.GetAll());

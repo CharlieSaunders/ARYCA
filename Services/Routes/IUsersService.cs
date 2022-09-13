@@ -6,8 +6,9 @@ using Common.DTO.Logs;
 using Common.DTO.Users;
 using Common.Entities.Logs;
 using Common.Entities.Users;
-using Infrastructure.InMemory;
-using Infrastructure.Repositories;
+using Infrastructure.EF;
+using Infrastructure.EF.Investments;
+using Infrastructure.Interfaces;
 using Services.Helpers;
 
 namespace Services.Routes
@@ -27,16 +28,16 @@ namespace Services.Routes
 
 	public class UsersService : IUsersService
 	{
-		private readonly InMemoryUserRepositories _inMemoryUserRepository;
+		private readonly EFUsersRepositories _inMemoryUserRepository;
 		private readonly IInvestmentRepository _investmentRepository;
 		private readonly ITokenService _tokenService;
 		private readonly ILogsService _logsService;
 
 		public UsersService(DataContext db, ITokenService tokenService)
 		{
-			_inMemoryUserRepository = new InMemoryUserRepositories(db);
+			_inMemoryUserRepository = new EFUsersRepositories(db);
 			_tokenService = tokenService;
-			_investmentRepository = new InvestmentRepository(db);
+			_investmentRepository = new EFInvestmentRepository(db);
 			_logsService = new LogsService(db);
 		}
 

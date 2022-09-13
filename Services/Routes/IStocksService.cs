@@ -8,8 +8,9 @@ using Common.Entities.Investments;
 using Common.Entities.Logs;
 using Common.Entities.Users;
 using Common.HttpClients;
-using Infrastructure.InMemory;
-using Infrastructure.Repositories;
+using Infrastructure.EF;
+using Infrastructure.EF.Investments;
+using Infrastructure.Interfaces;
 
 namespace Services.Routes
 {
@@ -26,15 +27,15 @@ namespace Services.Routes
 	{
 		private readonly BinanceHttpClient _binanceHttpClient;
 
-		private readonly InMemoryUserRepositories _inMemoryUserRepository;
+		private readonly EFUsersRepositories _inMemoryUserRepository;
 		private readonly IInvestmentRepository _userStocksRepository;
 		private readonly ILogsService _logsService;
 
 		public StocksService(DataContext db)
 		{
 			_binanceHttpClient = new BinanceHttpClient();
-			_inMemoryUserRepository = new InMemoryUserRepositories(db);
-			_userStocksRepository = new InvestmentRepository(db);
+			_inMemoryUserRepository = new EFUsersRepositories(db);
+			_userStocksRepository = new EFInvestmentRepository(db);
 			_logsService = new LogsService(db);
 		}
 

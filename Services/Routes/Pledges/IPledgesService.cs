@@ -7,8 +7,9 @@ using Common.DTO.Pledges;
 using Common.Entities.Logs;
 using Common.Entities.Pledges;
 using Common.Entities.Users;
-using Infrastructure.InMemory;
-using Infrastructure.Repositories;
+using Infrastructure.EF;
+using Infrastructure.EF.Pledges;
+using Infrastructure.Interfaces;
 
 namespace Services.Routes.Pledges
 {
@@ -26,15 +27,15 @@ namespace Services.Routes.Pledges
 
 	public class PledgesService : IPledgesService
 	{
-		private readonly InMemoryUserRepositories _inMemoryUserRepository;
+		private readonly EFUsersRepositories _inMemoryUserRepository;
 		private readonly IPledgesRepository _pledgesRepository;
 		private readonly ILogsService _logsService;
 
 		public PledgesService(DataContext db)
 		{
-			_pledgesRepository = new PledgesRepository(db);
+			_pledgesRepository = new EFPledgesRepository(db);
 			_logsService = new LogsService(db);
-			_inMemoryUserRepository = new InMemoryUserRepositories(db);
+			_inMemoryUserRepository = new EFUsersRepositories(db);
 		}
 
 		public IServicesResponse Create(CreatePledgeRequest request)

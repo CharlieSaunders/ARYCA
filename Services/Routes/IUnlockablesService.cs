@@ -6,8 +6,10 @@ using Common.DTO.Unlockables;
 using Common.Entities.Logs;
 using Common.Entities.Unlockables;
 using Common.Entities.Users;
-using Infrastructure.InMemory;
-using Infrastructure.Repositories;
+using Infrastructure.EF;
+using Infrastructure.EF.AppConfig;
+using Infrastructure.EF.Unlockables;
+using Infrastructure.Interfaces;
 
 namespace Services.Routes
 {
@@ -25,7 +27,7 @@ namespace Services.Routes
 
 	public class UnlockablesService : IUnlockablesService
 	{
-		private readonly InMemoryUserRepositories _inMemoryUserRepository;
+		private readonly EFUsersRepositories _inMemoryUserRepository;
 		private readonly IUnlockablesRepository _unlockablesRepository;
 		private readonly IApplicationConfigurationRepository _appConfigRepository;
 		private readonly ILogsService _logsService;
@@ -37,9 +39,9 @@ namespace Services.Routes
 
 		public UnlockablesService(DataContext db)
 		{
-			_inMemoryUserRepository = new InMemoryUserRepositories(db);
-			_unlockablesRepository = new UnlockablesRepository(db);
-			_appConfigRepository = new ApplicationConfigurationRepository(db);
+			_inMemoryUserRepository = new EFUsersRepositories(db);
+			_unlockablesRepository = new EFUnlockablesRepository(db);
+			_appConfigRepository = new EFAppConfigurationRepository(db);
 			_logsService = new LogsService(db);
 		}
 
