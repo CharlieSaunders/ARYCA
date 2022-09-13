@@ -3,13 +3,13 @@ using Common.DTO.Pledges;
 using Common.DTO.Stocks;
 using Common.DTO.Users;
 using Common.Entities.Users;
-using Infrastructure.InMemory.Users;
+using Infrastructure.EF.Users;
 using Infrastructure.Interfaces.UserRepositories;
 using Infrastructure.Repositories.UserRepositories;
 
-namespace Infrastructure.InMemory
+namespace Infrastructure.EF
 {
-	public class InMemoryUserRepositories
+	public class EFUsersRepositories : IUserRepositories
 	{
 		private readonly IUserHabitRepository _userHabitRepository;
 		private readonly IUserHistoricalStocksRepository _userHistoricalStocksRepository;
@@ -20,16 +20,16 @@ namespace Infrastructure.InMemory
 		private readonly IUserUnlockablesRepository _userUnlockableRepository;
 		private readonly IUserAchievementsRepository _userAchievements;
 
-		public InMemoryUserRepositories(DataContext db)
+		public EFUsersRepositories(DataContext db)
 		{
-			_userHabitRepository = new InMemoryUserHabitRepository(db);
-			_userHistoricalStocksRepository = new InMemoryUserHistoricalStocksRepository(db);
-			_userPlegdesRepository = new InMemoryUserPledgesRepository(db);
-			_userRepository = new InMemoryUserRepository(db);
-			_userStatsRepository = new InMemoryUserStatsRepository(db);
+			_userHabitRepository = new EFUserHabitRepository(db);
+			_userHistoricalStocksRepository = new EFUserHistoricalStocksRepository(db);
+			_userPlegdesRepository = new EFUserPledgesRepository(db);
+			_userRepository = new EFUserRepository(db);
+			_userStatsRepository = new EFUserStatsRepository(db);
 			_userTransactionRepository = new InMemoryUserTransactionRepository(db);
-			_userUnlockableRepository = new InMemoryUserUnlockablesRepository(db);
-			_userAchievements = new InMemoryUserAchievementsRepository(db);
+			_userUnlockableRepository = new EFUserUnlockablesRepository(db);
+			_userAchievements = new EFUserAchievementsRepository(db);
 		}
 
 		// USERS
@@ -41,18 +41,18 @@ namespace Infrastructure.InMemory
 		public User CreateUser(string username, string fname, string sname, string role) => _userRepository.Create(username, fname, sname, role);
 		public void UpdateUserBalance(Guid userReference, decimal value) => _userRepository.UpdateBalance(userReference, value);
 
-		// UNLOCKABLES
+		// USER UNLOCKABLES
 		public List<UserUnlockables> GetAllUnlockables(Guid userReference) => _userUnlockableRepository.GetAll(userReference);
 		public UserUnlockables GetUnlockables(Guid userReference, Guid unlockReference) => _userUnlockableRepository.Get(userReference, unlockReference);
 		public bool AddUnlockable(Guid userReference, Guid unlockReference) => _userUnlockableRepository.Add(userReference, unlockReference);
 		public bool DeleteAllUnlockables(Guid reference) => _userUnlockableRepository.DeleteAll(reference);
 		public bool DeleteAllUnlocks() => _userUnlockableRepository.DeleteAllUnlocks();
 
-		// TRANSACTIONS
+		// USER TRANSACTIONS
 		public UserTransaction AddTransaction(Guid userReference, string type, decimal value) => _userTransactionRepository.Add(userReference, type, value);
 		public List<UserTransaction> GetAllTransactionsByReference(Guid userReference) => _userTransactionRepository.GetAllByReference(userReference);
 
-		// STATS
+		// USER STATS
 		public void EnsureStatExists(Guid userReference) => _userStatsRepository.EnsureExists(userReference);
 		public UserStats GetStatByReference(Guid reference) => _userStatsRepository.GetByReference(reference);
 		public List<UserStats> GetAllStats(Guid userReference) => _userStatsRepository.GetAll(userReference);
@@ -70,7 +70,7 @@ namespace Infrastructure.InMemory
 		public UserPledges UpdatePledge(UserPledges pledge) => _userPlegdesRepository.Update(pledge);
 		public void DeletePledge(int pledgeId) => _userPlegdesRepository.Delete(pledgeId);
 
-		// HABITS 
+		// USER HABITS 
 		public bool AssignHabit(Guid userReference, Guid habitReference) => _userHabitRepository.Assign(userReference, habitReference);
 		public bool UnAssignHabit(Guid userReference, Guid habitReference) => _userHabitRepository.UnAssign(userReference, habitReference);
 		public bool DeleteHabit(Guid habitReference) => _userHabitRepository.Delete(habitReference);
@@ -79,11 +79,11 @@ namespace Infrastructure.InMemory
 		public UserHabits GetHabit(Guid userReference, Guid habitReference) => _userHabitRepository.GetHabit(userReference, habitReference);
 		public List<UserHabits> GetHabits(Guid userReference) => _userHabitRepository.Get(userReference);
 
-		// HISTORICAL STOCKS
+		// USER HISTORICAL STOCKS
 		public List<UserHistoricalStocks> GetAllHistoricalStocks(Guid userReference) => _userHistoricalStocksRepository.GetAll(userReference);
 		public UserHistoricalStocks AddHistoricalStock(RepositoryAddHistoricalStockRequest request) => _userHistoricalStocksRepository.Add(request);
 
-		// ACHIEVEMENTS
+		// USER ACHIEVEMENTS
 		public List<UserAchievements> GetAchievementsForUser(Guid reference) => _userAchievements.GetForUser(reference);
 		public UserAchievements AddAchievement(Guid userReference, int achievementId) => _userAchievements.Add(userReference, achievementId);
 

@@ -2,13 +2,13 @@
 using Common.Entities.Users;
 using Infrastructure.Repositories.UserRepositories;
 
-namespace Infrastructure.InMemory.Users
+namespace Infrastructure.EF.Users
 {
-	public class InMemoryUserStatsRepository : IUserStatsRepository
+	public class EFUserStatsRepository : IUserStatsRepository
 	{
 		private readonly DataContext _db;
 
-		public InMemoryUserStatsRepository(DataContext db)
+		public EFUserStatsRepository(DataContext db)
 		{
 			_db = db;
 		}

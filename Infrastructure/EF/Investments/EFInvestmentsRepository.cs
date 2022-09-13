@@ -1,20 +1,14 @@
 ﻿using Common.Data;
 using Common.Entities.Investments;
+using Infrastructure.Interfaces;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.EF.Investments
 {
-	public interface IInvestmentRepository
-	{
-		public List<UserInvestments> GetAllForUser(Guid userReference);
-		public UserInvestments Add(Guid userReference, string symbol, decimal share, decimal purchasePrice);
-		public UserInvestments Sell(Guid userReference, decimal shares, int id, decimal newSellPrice);
-	}
-
-	public class InvestmentRepository : IInvestmentRepository
+	public class EFInvestmentRepository : IInvestmentRepository
 	{
 		private readonly DataContext _db;
 
-		public InvestmentRepository(DataContext db)
+		public EFInvestmentRepository(DataContext db)
 		{
 			_db = db;
 		}

@@ -3,13 +3,13 @@ using Common.DTO.Pledges;
 using Common.Entities.Users;
 using Infrastructure.Repositories.UserRepositories;
 
-namespace Infrastructure.InMemory.Users
+namespace Infrastructure.EF.Users
 {
-	public class InMemoryUserPledgesRepository : IUserPledgesRepository
+	public class EFUserPledgesRepository : IUserPledgesRepository
 	{
 		private readonly DataContext _db;
 
-		public InMemoryUserPledgesRepository(DataContext db)
+		public EFUserPledgesRepository(DataContext db)
 		{
 			_db = db;
 		}

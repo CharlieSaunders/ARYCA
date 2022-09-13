@@ -2,7 +2,7 @@
 using Common.Entities.Users;
 using Infrastructure.Repositories.UserRepositories;
 
-namespace Infrastructure.InMemory.Users
+namespace Infrastructure.EF.Users
 {
 	public class InMemoryUserTransactionRepository : IUserTransactionsRepository
 	{

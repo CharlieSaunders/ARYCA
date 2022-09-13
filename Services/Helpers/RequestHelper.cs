@@ -1,7 +1,7 @@
 ﻿using Common.Classes.ErrorHandling;
 using Common.Data;
 using Common.Entities.Users;
-using Infrastructure.InMemory;
+using Infrastructure.EF;
 namespace Services.Helpers
 {
 	public interface IRequestHelper
@@ -13,11 +13,11 @@ namespace Services.Helpers
 	public class RequestHelper : IRequestHelper
 	{
 		private readonly string JWT_TOKEN_NAME = @"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
-		private readonly InMemoryUserRepositories _usersRepository;
+		private readonly EFUsersRepositories _usersRepository;
 
 		public RequestHelper(DataContext db)
 		{
-			_usersRepository = new InMemoryUserRepositories(db);
+			_usersRepository = new EFUsersRepositories(db);
 		}
 
 		public User UserFrom(HttpRequest request)

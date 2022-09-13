@@ -3,12 +3,12 @@ using Common.DTO.Users;
 using Common.Entities.Users;
 using Infrastructure.Repositories.UserRepositories;
 
-namespace Infrastructure.InMemory.Users
+namespace Infrastructure.EF.Users
 {
-	public class InMemoryUserRepository : IUserRepository
+	public class EFUserRepository : IUserRepository
 	{
 		private readonly DataContext _db;
-		public InMemoryUserRepository(DataContext db)
+		public EFUserRepository(DataContext db)
 		{
 			_db = db;
 		}

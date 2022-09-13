@@ -4,7 +4,8 @@ using Common.DTO.Configs;
 using Common.DTO.Logs;
 using Common.Entities.Configuration;
 using Common.Entities.Logs;
-using Infrastructure.Repositories;
+using Infrastructure.EF.AppConfig;
+using Infrastructure.Interfaces;
 
 namespace Services.Routes
 {
@@ -21,7 +22,7 @@ namespace Services.Routes
 
 		public ConfigService(DataContext db)
 		{
-			_appConfigRepository = new ApplicationConfigurationRepository(db);
+			_appConfigRepository = new EFAppConfigurationRepository(db);
 			_logsService = new LogsService(db);
 		}
 

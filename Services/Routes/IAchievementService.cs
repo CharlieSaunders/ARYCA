@@ -5,9 +5,10 @@ using Common.DTO.Achievements;
 using Common.DTO.Logs;
 using Common.Entities.Achievements;
 using Common.Entities.Logs;
-using Infrastructure.InMemory;
+using Infrastructure.EF;
+using Infrastructure.EF.Achievements;
+using Infrastructure.EF.Unlockables;
 using Infrastructure.Interfaces;
-using Infrastructure.Repositories;
 using static Common.Classes.Achievements.AchievementHelper;
 
 namespace Services.Routes
@@ -22,15 +23,15 @@ namespace Services.Routes
 	public class AchievementService : IAchievementService
 	{
 		private readonly IAchievementRepository _achievementRepository;
-		private readonly InMemoryUserRepositories _userRepository;
+		private readonly EFUsersRepositories _userRepository;
 		private readonly IUnlockablesRepository _unlockableRepository;
 		private readonly ILogsService _logService;
 
 		public AchievementService(DataContext db)
 		{
-			_achievementRepository = new AchievementRepository(db);
-			_userRepository = new InMemoryUserRepositories(db);
-			_unlockableRepository = new UnlockablesRepository(db);
+			_achievementRepository = new EFAchievementRepository(db);
+			_userRepository = new EFUsersRepositories(db);
+			_unlockableRepository = new EFUnlockablesRepository(db);
 			_logService = new LogsService(db);
 		}
 

@@ -2,12 +2,12 @@
 using Common.Entities.Users;
 using Infrastructure.Repositories.UserRepositories;
 
-namespace Infrastructure.InMemory.Users
+namespace Infrastructure.EF.Users
 {
-	public class InMemoryUserHabitRepository : IUserHabitRepository
+	public class EFUserHabitRepository : IUserHabitRepository
 	{
 		private readonly DataContext _db;
-		public InMemoryUserHabitRepository(DataContext db)
+		public EFUserHabitRepository(DataContext db)
 		{
 			_db = db;
 		}

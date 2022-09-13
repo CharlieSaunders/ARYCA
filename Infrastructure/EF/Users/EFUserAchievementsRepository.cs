@@ -2,13 +2,13 @@
 using Common.Entities.Users;
 using Infrastructure.Interfaces.UserRepositories;
 
-namespace Infrastructure.InMemory.Users
+namespace Infrastructure.EF.Users
 {
-	public class InMemoryUserAchievementsRepository : IUserAchievementsRepository
+	public class EFUserAchievementsRepository : IUserAchievementsRepository
 	{
 		private readonly DataContext _db;
 
-		public InMemoryUserAchievementsRepository(DataContext db)
+		public EFUserAchievementsRepository(DataContext db)
 		{
 			_db = db;
 		}

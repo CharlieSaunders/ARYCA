@@ -1,13 +1,14 @@
 ﻿using Common.Data;
 using Common.Entities.Users;
+using Infrastructure.Repositories.UserRepositories;
 
-namespace Infrastructure.Repositories.UserRepositories
+namespace Infrastructure.EF.Users
 {
-	public class InMemoryUserUnlockablesRepository : IUserUnlockablesRepository
+	public class EFUserUnlockablesRepository : IUserUnlockablesRepository
 	{
 		private readonly DataContext _db;
 
-		public InMemoryUserUnlockablesRepository(DataContext db)
+		public EFUserUnlockablesRepository(DataContext db)
 		{
 			_db = db;
 		}

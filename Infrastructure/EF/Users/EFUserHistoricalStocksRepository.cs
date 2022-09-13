@@ -3,13 +3,13 @@ using Common.DTO.Stocks;
 using Common.Entities.Users;
 using Infrastructure.Repositories.UserRepositories;
 
-namespace Infrastructure.InMemory.Users
+namespace Infrastructure.EF.Users
 {
-	public class InMemoryUserHistoricalStocksRepository : IUserHistoricalStocksRepository
+	public class EFUserHistoricalStocksRepository : IUserHistoricalStocksRepository
 	{
 		private readonly DataContext _db;
 
-		public InMemoryUserHistoricalStocksRepository(DataContext db)
+		public EFUserHistoricalStocksRepository(DataContext db)
 		{
 			_db = db;
 		}

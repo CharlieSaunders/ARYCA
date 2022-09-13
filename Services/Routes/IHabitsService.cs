@@ -6,8 +6,9 @@ using Common.DTO.Logs;
 using Common.Entities.Habits;
 using Common.Entities.Logs;
 using Common.Entities.Users;
-using Infrastructure.InMemory;
-using Infrastructure.Repositories;
+using Infrastructure.EF;
+using Infrastructure.EF.Habits;
+using Infrastructure.Interfaces;
 
 namespace Services.Routes
 {
@@ -25,15 +26,15 @@ namespace Services.Routes
 
 	public class HabitsService : IHabitsService
 	{
-		private readonly InMemoryUserRepositories _inMemoryUserRepository;
+		private readonly EFUsersRepositories _inMemoryUserRepository;
 		private readonly IHabitsRepository _habitsRepository;
 		private readonly ILogsService _logsService;
 		private const int HABIT_VALUE = 1;
 
 		public HabitsService(DataContext db)
 		{
-			_inMemoryUserRepository = new InMemoryUserRepositories(db);
-			_habitsRepository = new HabitsRepository(db);
+			_inMemoryUserRepository = new EFUsersRepositories(db);
+			_habitsRepository = new EFHabitsRepository(db);
 			_logsService = new LogsService(db);
 		}
 
