@@ -57,7 +57,7 @@ namespace ARYCA_Tests.Services.Routes.Pledges
 		[Test]
 		public void ThenThePledgeWasCreated()
 		{
-			Assert.That(_pledgesSubject.Count, Is.EqualTo(1));
+			Assert.That(_pledgesSubject, Has.Count.EqualTo(1));
 		}
 
 		[Test]

@@ -42,7 +42,7 @@ namespace ARYCA_Tests.Clients.Bridges.Achievements
 		[Test]
 		public void ThenTheNumberOfUserAchievementMatches()
 		{
-			Assert.That(_subject.Count, Is.EqualTo(_userAchievements.Count));
+			Assert.That(_subject, Has.Count.EqualTo(_userAchievements.Count));
 		}
 	}
 }

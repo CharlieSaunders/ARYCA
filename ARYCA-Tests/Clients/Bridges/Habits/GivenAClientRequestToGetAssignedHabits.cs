@@ -1,5 +1,4 @@
-﻿using System;
-using ARYCA_Tests.Helpers;
+﻿using ARYCA_Tests.Helpers;
 using ARYCA_Tests.Helpers.TypeHelpers;
 using Client.ServicesBridge;
 using Client.States.Toast;
@@ -43,7 +42,7 @@ namespace ARYCA_Tests.Clients.Bridges.Habits
 		[Test]
 		public void ThenTheHabitsAreReturned()
 		{
-			Assert.That(_subject.Count, Is.EqualTo(_habits.Count));
+			Assert.That(_subject, Has.Count.EqualTo(_habits.Count));
 		}
 	}
 }

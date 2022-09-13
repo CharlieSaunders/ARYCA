@@ -1,11 +1,9 @@
-﻿using System;
-using ARYCA_Tests.Helpers;
+﻿using ARYCA_Tests.Helpers;
 using ARYCA_Tests.Helpers.TypeHelpers;
 using Client.ServicesBridge;
 using Client.States.Toast;
 using Common.Classes;
 using Common.DTO.Pledges;
-using Common.Entities.Pledges;
 using Common.HttpClients;
 using Moq;
 using NUnit.Framework;
@@ -43,7 +41,7 @@ namespace ARYCA_Tests.Clients.Bridges.Pledges
 		[Test]
 		public void ThenThePledgesReturnedMatch()
 		{
-			Assert.That(_subject.Count, Is.EqualTo(_pledges.Count));
+			Assert.That(_subject, Has.Count.EqualTo(_pledges.Count));
 		}
 	}
 }

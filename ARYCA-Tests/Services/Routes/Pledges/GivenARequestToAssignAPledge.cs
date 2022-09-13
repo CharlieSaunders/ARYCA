@@ -85,7 +85,7 @@ namespace ARYCA_Tests.Services.Routes.Pledges
 		[Test]
 		public void ThenAnAssignedPledgeIsPresent()
 		{
-			Assert.That(_allPlegdes.Count, Is.EqualTo(1));
+			Assert.That(_allPlegdes, Has.Count.EqualTo(1));
 		}
 	}
 }

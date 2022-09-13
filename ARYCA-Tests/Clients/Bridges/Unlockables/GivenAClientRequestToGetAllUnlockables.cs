@@ -1,11 +1,9 @@
-﻿using System;
-using ARYCA_Tests.Helpers;
+﻿using ARYCA_Tests.Helpers;
 using ARYCA_Tests.Helpers.TypeHelpers;
 using Client.ServicesBridge;
 using Client.States.Toast;
 using Common.Classes;
 using Common.DTO.Unlockables;
-using Common.Entities.Users;
 using Common.HttpClients;
 using Moq;
 using NUnit.Framework;
@@ -43,7 +41,7 @@ namespace ARYCA_Tests.Clients.Bridges.Unlockables
 		[Test]
 		public void ThenTheUnlockablesReturnedMatch()
 		{
-			Assert.That(_subject.Count, Is.EqualTo(_userUnlockables.Count));
+			Assert.That(_subject, Has.Count.EqualTo(_userUnlockables.Count));
 		}
 	}
 }

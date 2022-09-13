@@ -1,5 +1,4 @@
-﻿using System;
-using ARYCA_Tests.Helpers;
+﻿using ARYCA_Tests.Helpers;
 using ARYCA_Tests.Helpers.TypeHelpers;
 using Client.ServicesBridge;
 using Client.States.Toast;
@@ -42,7 +41,7 @@ namespace ARYCA_Tests.Clients.Bridges.Logs
 		[Test]
 		public void ThenTheLogsReturnedMatch()
 		{
-			Assert.That(_subject.Count, Is.EqualTo(_logs.Count));
+			Assert.That(_subject, Has.Count.EqualTo(_logs.Count));
 		}
 	}
 }

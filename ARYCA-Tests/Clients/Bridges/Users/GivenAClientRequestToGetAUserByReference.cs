@@ -1,11 +1,9 @@
-﻿using System;
-using ARYCA_Tests.Helpers;
+﻿using ARYCA_Tests.Helpers;
 using ARYCA_Tests.Helpers.TypeHelpers;
 using Client.ServicesBridge;
 using Client.States.Toast;
 using Common.Classes;
 using Common.Classes.Users;
-using Common.Entities.Users;
 using Common.HttpClients;
 using Moq;
 using NUnit.Framework;
